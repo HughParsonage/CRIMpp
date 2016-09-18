@@ -1,5 +1,6 @@
 //' @title Balance after n real level payments
-//'
+//' @name BalanceAfterRealLevelPayments
+//' @description Super balance after level payments.
 //' @param nominal_payment An integer representing the payment (in nominal terms with respect to \code{balance}).
 //' @param n Number of periods (years).
 //' @param balance The super balance prior to retirement.

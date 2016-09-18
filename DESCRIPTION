@@ -1,14 +1,19 @@
 Package: CRIMpp
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Model Retirement Incomes.
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Authors@R: c(person("Hugh", "Parsonage", role = c("aut", "cre"), email = "hugh.parsonage+grattanPackage@grattaninstitute.edu.au"),
+              person("William", "Young", role = "aut"))
+Maintainer: Hugh Parsonage <hugh.parsonage+CRIMPP@gmail.com>
+Description: A Rcpp model of retirement incomes. Initially intended to model replacement rates, given starting conditions of an individual.
+License: MIT + LICENSE
 LazyData: TRUE
 Imports:
-    Rcpp (>= 0.12.6)
-LinkingTo:
-    Rcpp
-Suggests: testthat
+    Rcpp (>= 0.12.6),
+    grattan,
+    data.table,
+    magrittr
+LinkingTo: Rcpp
+Suggests:
+    testthat
+RoxygenNote: 5.0.1
