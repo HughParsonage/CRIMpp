@@ -2,6 +2,7 @@
 
 export(BalanceAfterRealLevelPayments)
 export(RealPensionLevel)
+export(aveRetInc)
 export(super_guarantee)
 export(working_life_remuneration)
 import(data.table)
