@@ -31,4 +31,3 @@ Using one set of controls in the wrong \code{wage.method} is a warning.}
 \description{
 Determine the superannuation balance at the commencement of retirement of a single individual.
 }
-

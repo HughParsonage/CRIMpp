@@ -18,4 +18,3 @@ The rate of the superannuation guarantee
 \details{
 Currently returns 9.5\% for all years.
 }
-

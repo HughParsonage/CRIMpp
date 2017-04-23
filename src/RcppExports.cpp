@@ -36,3 +36,40 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// showOutput
+void showOutput(double x);
+RcppExport SEXP CRIMpp_showOutput(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    showOutput(x);
+    return R_NilValue;
+END_RCPP
+}
+// aveRetInc
+double aveRetInc(int AWOTE_prop, double AWOTE_starting_year, double start_balance, std::string deflator, int starting_age, int starting_year, int retirement_age, int death_age, NumericVector short_run_wage_index, double long_run_wage_index, double long_term_CPI, double contribution_tax, double asset_earnings_accumulation, double earnings_tax_accumulation, double asset_earnings_pension, double earnings_tax_pension, double taxable_earnings);
+RcppExport SEXP CRIMpp_aveRetInc(SEXP AWOTE_propSEXP, SEXP AWOTE_starting_yearSEXP, SEXP start_balanceSEXP, SEXP deflatorSEXP, SEXP starting_ageSEXP, SEXP starting_yearSEXP, SEXP retirement_ageSEXP, SEXP death_ageSEXP, SEXP short_run_wage_indexSEXP, SEXP long_run_wage_indexSEXP, SEXP long_term_CPISEXP, SEXP contribution_taxSEXP, SEXP asset_earnings_accumulationSEXP, SEXP earnings_tax_accumulationSEXP, SEXP asset_earnings_pensionSEXP, SEXP earnings_tax_pensionSEXP, SEXP taxable_earningsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type AWOTE_prop(AWOTE_propSEXP);
+    Rcpp::traits::input_parameter< double >::type AWOTE_starting_year(AWOTE_starting_yearSEXP);
+    Rcpp::traits::input_parameter< double >::type start_balance(start_balanceSEXP);
+    Rcpp::traits::input_parameter< std::string >::type deflator(deflatorSEXP);
+    Rcpp::traits::input_parameter< int >::type starting_age(starting_ageSEXP);
+    Rcpp::traits::input_parameter< int >::type starting_year(starting_yearSEXP);
+    Rcpp::traits::input_parameter< int >::type retirement_age(retirement_ageSEXP);
+    Rcpp::traits::input_parameter< int >::type death_age(death_ageSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type short_run_wage_index(short_run_wage_indexSEXP);
+    Rcpp::traits::input_parameter< double >::type long_run_wage_index(long_run_wage_indexSEXP);
+    Rcpp::traits::input_parameter< double >::type long_term_CPI(long_term_CPISEXP);
+    Rcpp::traits::input_parameter< double >::type contribution_tax(contribution_taxSEXP);
+    Rcpp::traits::input_parameter< double >::type asset_earnings_accumulation(asset_earnings_accumulationSEXP);
+    Rcpp::traits::input_parameter< double >::type earnings_tax_accumulation(earnings_tax_accumulationSEXP);
+    Rcpp::traits::input_parameter< double >::type asset_earnings_pension(asset_earnings_pensionSEXP);
+    Rcpp::traits::input_parameter< double >::type earnings_tax_pension(earnings_tax_pensionSEXP);
+    Rcpp::traits::input_parameter< double >::type taxable_earnings(taxable_earningsSEXP);
+    rcpp_result_gen = Rcpp::wrap(aveRetInc(AWOTE_prop, AWOTE_starting_year, start_balance, deflator, starting_age, starting_year, retirement_age, death_age, short_run_wage_index, long_run_wage_index, long_term_CPI, contribution_tax, asset_earnings_accumulation, earnings_tax_accumulation, asset_earnings_pension, earnings_tax_pension, taxable_earnings));
+    return rcpp_result_gen;
+END_RCPP
+}

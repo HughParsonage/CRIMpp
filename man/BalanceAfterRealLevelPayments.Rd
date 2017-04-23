@@ -19,4 +19,3 @@
 \description{
 Super balance after level payments.
 }
-

@@ -17,4 +17,3 @@ The replacement rate.
 \description{
 Replacement rate given initial conditions.
 }
-

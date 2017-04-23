@@ -41,4 +41,3 @@ A \code{data.table} of information about the individual's remuneration from \cod
 \description{
 Working life remuneration
 }
-
