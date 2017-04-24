@@ -17,6 +17,15 @@ BalanceAfterRealLevelPayments <- function(nominal_payment, n, balance, r_earning
     .Call('CRIMpp_BalanceAfterRealLevelPayments', PACKAGE = 'CRIMpp', nominal_payment, n, balance, r_earnings, cpi, inArrears)
 }
 
+#' @title Income tax
+#' @name IncomeTax
+#' @export IncomeTax
+NULL
+
+IncomeTax <- function(income, thresholds = as.numeric( c(0, 18200, 37000, 87000, 180000)), rates = as.numeric( c(0, 0.19, 0.325, 0.370, 0.450)), litoThr = 37000, litoMax = 445, litoTaper = 0.015, saptoThr = 32279, saptoMax = 2230, saptoTaper = 0.1250, medLevyRate = 0.02, medLevyThr = 20542, medLevyShade = 0.10, sapto_eligible = FALSE) {
+    .Call('CRIMpp_IncomeTax', PACKAGE = 'CRIMpp', income, thresholds, rates, litoThr, litoMax, litoTaper, saptoThr, saptoMax, saptoTaper, medLevyRate, medLevyThr, medLevyShade, sapto_eligible)
+}
+
 #' @title Real level of pension payments giving starting retirement conditions
 #' @name RealPensionLevel
 #' @description The value of a cpi-adjusted pension in nominal terms.
@@ -33,17 +42,17 @@ RealPensionLevel <- function(n, balance, r_earnings, cpi, inArrears) {
 }
 
 #' @title Average income in retirement
-#' @name aveRetInc
+#' @name SuperBalanceAtRetirement
 #' @description Average income in retirement.
 #' @param AWOTE_prop Proportion of AWOTE.
-#' @export aveRetInc
+#' @export SuperBalanceAtRetirement
 NULL
 
 showOutput <- function(x) {
     invisible(.Call('CRIMpp_showOutput', PACKAGE = 'CRIMpp', x))
 }
 
-aveRetInc <- function(AWOTE_prop = 1L, AWOTE_starting_year = 78200, start_balance = 0, deflator = "CPI", starting_age = 30L, starting_year = 2016L, retirement_age = 70L, death_age = 92L, short_run_wage_index = as.numeric( c(0.0225, 0.0250, 0.0275, 0.0325, 0.0350)), long_run_wage_index = 0.0404, long_term_CPI = 0.0250, contribution_tax = 0.15, asset_earnings_accumulation = 0.0650, earnings_tax_accumulation = 0.15, asset_earnings_pension = 0.0550, earnings_tax_pension = 0.0, taxable_earnings = 0.53) {
-    .Call('CRIMpp_aveRetInc', PACKAGE = 'CRIMpp', AWOTE_prop, AWOTE_starting_year, start_balance, deflator, starting_age, starting_year, retirement_age, death_age, short_run_wage_index, long_run_wage_index, long_term_CPI, contribution_tax, asset_earnings_accumulation, earnings_tax_accumulation, asset_earnings_pension, earnings_tax_pension, taxable_earnings)
+SuperBalanceAtRetirement <- function(AWOTE_starting_year = 78200, start_balance = 0, deflator = "CPI", starting_age = 30L, starting_year = 2016L, retirement_age = 70L, death_age = 92L, short_run_wage_index = as.numeric( c(0.0225, 0.0250, 0.0275, 0.0325, 0.0350)), long_run_wage_index = 0.0404, long_term_CPI = 0.0250, contribution_tax = 0.15, asset_earnings_accumulation = 0.0650, earnings_tax_accumulation = 0.15, asset_earnings_pension = 0.0550, earnings_tax_pension = 0.0, taxable_earnings = 0.53, super_account_fee_2015 = 320.0) {
+    .Call('CRIMpp_SuperBalanceAtRetirement', PACKAGE = 'CRIMpp', AWOTE_starting_year, start_balance, deflator, starting_age, starting_year, retirement_age, death_age, short_run_wage_index, long_run_wage_index, long_term_CPI, contribution_tax, asset_earnings_accumulation, earnings_tax_accumulation, asset_earnings_pension, earnings_tax_pension, taxable_earnings, super_account_fee_2015)
 }
 

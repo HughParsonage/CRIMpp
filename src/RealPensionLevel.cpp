@@ -15,20 +15,21 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 int RealPensionLevel(int n, int balance, double r_earnings, double cpi, bool inArrears) {
   int p = 1;
-  while (BalanceAfterRealLevelPayments(p, n, balance, r_earnings, cpi, inArrears) > 0) {
-    p += p + 10000;
+  int N = 13;
+  int j = N;
+  for (int k = 1; k <= N; ++k){
+    j = N - k;
+    while (BalanceAfterRealLevelPayments(p, n, balance, r_earnings, cpi, inArrears) > 0) {
+      p += p + pow(2, k);
+    }
+    
+    p -= pow(2, k);
   }
-
-  p -= 9999;
+  
   while (BalanceAfterRealLevelPayments(p, n, balance, r_earnings, cpi, inArrears) > 0) {
-    p += p + 100;
+    p += 1;
   }
-
-  p -= 99;
-  while (BalanceAfterRealLevelPayments(p, n, balance, r_earnings, cpi, inArrears) > 0) {
-    p += p + 1;
-  }
-
+  
   return p;
 }
 
