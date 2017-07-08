@@ -8,6 +8,7 @@ Maintainer: Hugh Parsonage <hugh.parsonage+CRIMPP@gmail.com>
 Description: A Rcpp model of retirement incomes. Initially intended to model replacement rates, given starting conditions of an individual.
 License: MIT + LICENSE
 LazyData: TRUE
+Depends: R (>= 2.10)
 Imports:
     Rcpp (>= 0.12.6),
     grattan,

@@ -6,19 +6,20 @@
 //' @param age Age (integer).
 //' @param year Year of entitlement.
 //' @param homeOwner Is the person a home-owner?
-//' @param sinRaMax Maximum entitlement to rent-assistance for singles.
+//' @param sinRaMax Maximum fortnightly entitlement to rent-assistance for singles.
+//' @param sinMaxRate Pension maximum base rate, per fortnight, for singles.
 //' @param sinAssHomeThr Assets threshold for single home-owners.
 //' @param sinAssNonHomeThr Assets threshold for singles who don't own a home.
 //' @param pensAssTpr Taper rate for assets test.
 //' @param sinIncThr Income threshold for income test.
 //' @param sinSupTot Pension supplement, total amount, per fortnight for a single.
 //' @param sinSupMin Pension supplement, minimum amount, per fortnight for a single.
-//' @export AgePension
+//' @export AgePension age_pension
 
 #include <Rcpp.h>
 using namespace Rcpp;
 
-// [[Rcpp:export]]
+// [[Rcpp::export]]
 int pensionAge (int year) {
   // 2015-16 = 65
   // 2019-20 = 66
@@ -29,8 +30,22 @@ int pensionAge (int year) {
   return out;
 }
 
-// [[Rcpp:export]]
-double AgePension (double assets, double income, bool homeOwner, int age, int year, double sinRaMax, double sinMaxRate, double sinAssHomeThr, double sinAssNonHomeThr, double pensAssTpr, double sinIncThr, double pensIncTpr, double sinSupTot, double sinSupMin, double sinCesMax) {
+// [[Rcpp::export]]
+double AgePension (double assets, 
+                   double income, 
+                   bool homeOwner,
+                   int age, 
+                   int year,
+                   double sinRaMax = 129.4,
+                   double sinMaxRate = 788.4,
+                   double sinAssHomeThr = 202000,
+                   double sinAssNonHomeThr = 348500,
+                   double pensAssTpr = 0.015,
+                   double sinIncThr = 162,
+                   double pensIncTpr = 0.50,
+                   double sinSupTot = 14.1,
+                   double sinSupMin = 14.1,
+                   double sinCesMax = 14.1) {
   double out = 0;
   if (age > pensionAge(year)) {
     double maxRA = sinRaMax;
@@ -46,7 +61,7 @@ double AgePension (double assets, double income, bool homeOwner, int age, int ye
     if (homeOwner) {
       assetsThr = sinAssHomeThr;
     }
-    if (assets > assetsThr){
+    if (assets > assetsThr) {
       assTestAmt = 26 * pensAssTpr * (assets - sinAssHomeThr);
     }
     
@@ -72,12 +87,30 @@ double AgePension (double assets, double income, bool homeOwner, int age, int ye
   return out;
 }
 
+// [[Rcpp::export]]
+NumericVector age_pension(NumericVector Assets,
+                          NumericVector Income,
+                          LogicalVector HomeOwner,
+                          IntegerVector Age,
+                          IntegerVector Year) {
+  int n = Assets.length();
+  NumericVector out(n);
+  
+  for (int k = 0; k < n; ++k) {
+    out[k] = AgePension(Assets[k], Income[k], HomeOwner[k], Age[k], Year[k]);
+  }
+  return out;
+  
+}
 
-// You can include R code blocks in C++ files processed with sourceCpp
-// (useful for testing and development). The R code will be automatically 
-// run after the compilation.
-//
 
-/*** R
-timesTwo(42)
-*/
+
+
+
+
+
+
+
+
+
+

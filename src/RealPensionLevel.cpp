@@ -15,16 +15,41 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 int RealPensionLevel(int n, int balance, double r_earnings, double cpi, bool inArrears) {
   int p = 1;
-  int N = 13;
-  int j = N;
-  for (int k = 1; k <= N; ++k){
-    j = N - k;
-    while (BalanceAfterRealLevelPayments(p, n, balance, r_earnings, cpi, inArrears) > 0) {
-      p += p + pow(2, k);
-    }
-    
-    p -= pow(2, k);
+  // int N = 13;
+  // int j = N;
+  // for (int k = 1; k <= N; ++k){
+  //   j = N - k;
+  //   while (BalanceAfterRealLevelPayments(p, n, balance, r_earnings, cpi, inArrears) > 0) {
+  //     p += p + pow(2, j);
+  //   }
+  //   
+  //   p -= pow(2, j);
+  // }
+  
+  while (BalanceAfterRealLevelPayments(p, n, balance, r_earnings, cpi, inArrears) > 0) {
+    p += 20000;
   }
+  p -= 19999;
+  
+  while (BalanceAfterRealLevelPayments(p, n, balance, r_earnings, cpi, inArrears) > 0) {
+    p += 5000;
+  }
+  p -= 4999;
+  
+  while (BalanceAfterRealLevelPayments(p, n, balance, r_earnings, cpi, inArrears) > 0) {
+    p += 1000;
+  }
+  p -= 999;
+  
+  while (BalanceAfterRealLevelPayments(p, n, balance, r_earnings, cpi, inArrears) > 0) {
+    p += 200;
+  }
+  p -= 199;
+  
+  while (BalanceAfterRealLevelPayments(p, n, balance, r_earnings, cpi, inArrears) > 0) {
+    p += 50;
+  }
+  p -= 49;
   
   while (BalanceAfterRealLevelPayments(p, n, balance, r_earnings, cpi, inArrears) > 0) {
     p += 1;

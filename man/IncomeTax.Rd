@@ -3,3 +3,13 @@
 \name{IncomeTax}
 \alias{IncomeTax}
 \title{Income tax}
+\arguments{
+\item{income}{The persons's income.}
+
+\item{thresholds}{Income tax brackets}
+
+\item{rates}{Marginal tax rates.}
+}
+\description{
+Income tax for a single worker.
+}

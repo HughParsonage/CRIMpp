@@ -41,6 +41,7 @@ double SuperBalanceAtRetirement(double AWOTE_starting_year = 78200,
   double underlying_super_cap = 30000;
   int super_cap = 30000;
   double SG_rate = 9.19 / 100;
+  double SG_payment = 0.0;
   double contribution = 0.0;
   double net_contribution = 0.0;
   double earnings = 0.0;
@@ -49,10 +50,15 @@ double SuperBalanceAtRetirement(double AWOTE_starting_year = 78200,
   // grattan::cpi_inflator(from_fy = "2014-15", to_fy = "2016-17") = 1.032081
   double super_fee = super_account_fee_2015 * 1.032;
   double income_tax = 0.0;
+  double total_employment_remuneration = 0.0;
+  double working_life_income = 0.0;
+  double income_deflated = income / (1 + wage_index);
+  double working_life_income_deflated = 0.0;
   
   int year = starting_year;
   for (int i = 1; i <= n; ++i) {
     cpi *= (1 + long_term_CPI);
+    
     if (i <= 5) {
       wage_index = short_run_wage_index[i - 1];
     } else {
@@ -90,7 +96,10 @@ double SuperBalanceAtRetirement(double AWOTE_starting_year = 78200,
       }
     }
     
-    contribution = salary * SG_rate;
+    SG_payment = salary * SG_rate;
+    
+    total_employment_remuneration = salary + SG_payment;
+    
     if (contribution > super_cap) {
       salary += contribution - super_cap;
       contribution = super_cap;
@@ -113,10 +122,16 @@ double SuperBalanceAtRetirement(double AWOTE_starting_year = 78200,
                            0.10,
                            false);
     income -= income_tax;
+    
+    if (age < retirement_age){
+      income_deflated = income / (1 + wage_index);
+      working_life_income += income;
+      working_life_income_deflated += income_deflated;
+    } 
     age += 1;
     year += 1;
   }
-  return super_balance;
+  return super_balance / (pow(1 + wage_index, n));
 }
 
 
@@ -126,5 +141,5 @@ double SuperBalanceAtRetirement(double AWOTE_starting_year = 78200,
 //
 
 /*** R
-timesTwo(42)
+testthat::expect_equal(1, 1)
 */

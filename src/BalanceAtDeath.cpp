@@ -18,16 +18,19 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 int BalanceAfterRealLevelPayments(int nominal_payment, int n, int balance, double r_earnings, double cpi, bool inArrears) {
   int outbalance = balance;
+  double outbalanceDbl = outbalance;
   if (inArrears) {
     // Payment comes out after balance has grown for the year
     for (int i = 1; i <= n; ++i) {
-      outbalance += outbalance * r_earnings;
+      outbalance += floor(outbalanceDbl * r_earnings);
       outbalance -= nominal_payment * pow(1 + cpi, i);
+      outbalanceDbl = outbalance;
     }
   } else {
     for (int i = 1; i <= n; ++i) {
       outbalance -= nominal_payment * pow(1 + cpi, i);
-      outbalance += outbalance * r_earnings;
+      outbalance += floor(outbalanceDbl * r_earnings);
+      outbalanceDbl = outbalance;
     }
   }
   return outbalance;

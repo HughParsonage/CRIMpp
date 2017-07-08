@@ -5,6 +5,57 @@
 
 using namespace Rcpp;
 
+// pensionAge
+int pensionAge(int year);
+RcppExport SEXP CRIMpp_pensionAge(SEXP yearSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type year(yearSEXP);
+    rcpp_result_gen = Rcpp::wrap(pensionAge(year));
+    return rcpp_result_gen;
+END_RCPP
+}
+// AgePension
+double AgePension(double assets, double income, bool homeOwner, int age, int year, double sinRaMax, double sinMaxRate, double sinAssHomeThr, double sinAssNonHomeThr, double pensAssTpr, double sinIncThr, double pensIncTpr, double sinSupTot, double sinSupMin, double sinCesMax);
+RcppExport SEXP CRIMpp_AgePension(SEXP assetsSEXP, SEXP incomeSEXP, SEXP homeOwnerSEXP, SEXP ageSEXP, SEXP yearSEXP, SEXP sinRaMaxSEXP, SEXP sinMaxRateSEXP, SEXP sinAssHomeThrSEXP, SEXP sinAssNonHomeThrSEXP, SEXP pensAssTprSEXP, SEXP sinIncThrSEXP, SEXP pensIncTprSEXP, SEXP sinSupTotSEXP, SEXP sinSupMinSEXP, SEXP sinCesMaxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type assets(assetsSEXP);
+    Rcpp::traits::input_parameter< double >::type income(incomeSEXP);
+    Rcpp::traits::input_parameter< bool >::type homeOwner(homeOwnerSEXP);
+    Rcpp::traits::input_parameter< int >::type age(ageSEXP);
+    Rcpp::traits::input_parameter< int >::type year(yearSEXP);
+    Rcpp::traits::input_parameter< double >::type sinRaMax(sinRaMaxSEXP);
+    Rcpp::traits::input_parameter< double >::type sinMaxRate(sinMaxRateSEXP);
+    Rcpp::traits::input_parameter< double >::type sinAssHomeThr(sinAssHomeThrSEXP);
+    Rcpp::traits::input_parameter< double >::type sinAssNonHomeThr(sinAssNonHomeThrSEXP);
+    Rcpp::traits::input_parameter< double >::type pensAssTpr(pensAssTprSEXP);
+    Rcpp::traits::input_parameter< double >::type sinIncThr(sinIncThrSEXP);
+    Rcpp::traits::input_parameter< double >::type pensIncTpr(pensIncTprSEXP);
+    Rcpp::traits::input_parameter< double >::type sinSupTot(sinSupTotSEXP);
+    Rcpp::traits::input_parameter< double >::type sinSupMin(sinSupMinSEXP);
+    Rcpp::traits::input_parameter< double >::type sinCesMax(sinCesMaxSEXP);
+    rcpp_result_gen = Rcpp::wrap(AgePension(assets, income, homeOwner, age, year, sinRaMax, sinMaxRate, sinAssHomeThr, sinAssNonHomeThr, pensAssTpr, sinIncThr, pensIncTpr, sinSupTot, sinSupMin, sinCesMax));
+    return rcpp_result_gen;
+END_RCPP
+}
+// age_pension
+NumericVector age_pension(NumericVector Assets, NumericVector Income, LogicalVector HomeOwner, IntegerVector Age, IntegerVector Year);
+RcppExport SEXP CRIMpp_age_pension(SEXP AssetsSEXP, SEXP IncomeSEXP, SEXP HomeOwnerSEXP, SEXP AgeSEXP, SEXP YearSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type Assets(AssetsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Income(IncomeSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type HomeOwner(HomeOwnerSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type Age(AgeSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type Year(YearSEXP);
+    rcpp_result_gen = Rcpp::wrap(age_pension(Assets, Income, HomeOwner, Age, Year));
+    return rcpp_result_gen;
+END_RCPP
+}
 // BalanceAfterRealLevelPayments
 int BalanceAfterRealLevelPayments(int nominal_payment, int n, int balance, double r_earnings, double cpi, bool inArrears);
 RcppExport SEXP CRIMpp_BalanceAfterRealLevelPayments(SEXP nominal_paymentSEXP, SEXP nSEXP, SEXP balanceSEXP, SEXP r_earningsSEXP, SEXP cpiSEXP, SEXP inArrearsSEXP) {
@@ -56,6 +107,96 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type cpi(cpiSEXP);
     Rcpp::traits::input_parameter< bool >::type inArrears(inArrearsSEXP);
     rcpp_result_gen = Rcpp::wrap(RealPensionLevel(n, balance, r_earnings, cpi, inArrears));
+    return rcpp_result_gen;
+END_RCPP
+}
+// showOutputt
+void showOutputt(const char* z, double x);
+RcppExport SEXP CRIMpp_showOutputt(SEXP zSEXP, SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const char* >::type z(zSEXP);
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    showOutputt(z, x);
+    return R_NilValue;
+END_RCPP
+}
+// Listo
+double Listo(double adjusted_income, double contributions, double threshold, double max_listo);
+RcppExport SEXP CRIMpp_Listo(SEXP adjusted_incomeSEXP, SEXP contributionsSEXP, SEXP thresholdSEXP, SEXP max_listoSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type adjusted_income(adjusted_incomeSEXP);
+    Rcpp::traits::input_parameter< double >::type contributions(contributionsSEXP);
+    Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
+    Rcpp::traits::input_parameter< double >::type max_listo(max_listoSEXP);
+    rcpp_result_gen = Rcpp::wrap(Listo(adjusted_income, contributions, threshold, max_listo));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ReplacementRate
+double ReplacementRate(int starting_age, int retirement_age, std::string wage_method, double AWOTE_starting_year, double AWOTE_percentage, int percentile, bool homeowner, double house_value, int death_age, int start_fy_ending, std::string SG_rate_method, std::string drawDownMethod, NumericVector minDrawDown6474, NumericVector minDrawDown7579, NumericVector minDrawDown8084, NumericVector minDrawDown8589, NumericVector minDrawDown9094, NumericVector minDrawDown9599, NumericVector short_run_wage_growth, double long_run_wage_growth, double long_run_cpi_growth, double initial_super_balance, bool apply_pretax_cap, double super_acct_fixed_fee, double contributions_tax_rate, double asset_earnings_accumulation, double earnings_tax_accumulation, double asset_earnings_pension, double earnings_tax_pension, double div293_threshold);
+RcppExport SEXP CRIMpp_ReplacementRate(SEXP starting_ageSEXP, SEXP retirement_ageSEXP, SEXP wage_methodSEXP, SEXP AWOTE_starting_yearSEXP, SEXP AWOTE_percentageSEXP, SEXP percentileSEXP, SEXP homeownerSEXP, SEXP house_valueSEXP, SEXP death_ageSEXP, SEXP start_fy_endingSEXP, SEXP SG_rate_methodSEXP, SEXP drawDownMethodSEXP, SEXP minDrawDown6474SEXP, SEXP minDrawDown7579SEXP, SEXP minDrawDown8084SEXP, SEXP minDrawDown8589SEXP, SEXP minDrawDown9094SEXP, SEXP minDrawDown9599SEXP, SEXP short_run_wage_growthSEXP, SEXP long_run_wage_growthSEXP, SEXP long_run_cpi_growthSEXP, SEXP initial_super_balanceSEXP, SEXP apply_pretax_capSEXP, SEXP super_acct_fixed_feeSEXP, SEXP contributions_tax_rateSEXP, SEXP asset_earnings_accumulationSEXP, SEXP earnings_tax_accumulationSEXP, SEXP asset_earnings_pensionSEXP, SEXP earnings_tax_pensionSEXP, SEXP div293_thresholdSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type starting_age(starting_ageSEXP);
+    Rcpp::traits::input_parameter< int >::type retirement_age(retirement_ageSEXP);
+    Rcpp::traits::input_parameter< std::string >::type wage_method(wage_methodSEXP);
+    Rcpp::traits::input_parameter< double >::type AWOTE_starting_year(AWOTE_starting_yearSEXP);
+    Rcpp::traits::input_parameter< double >::type AWOTE_percentage(AWOTE_percentageSEXP);
+    Rcpp::traits::input_parameter< int >::type percentile(percentileSEXP);
+    Rcpp::traits::input_parameter< bool >::type homeowner(homeownerSEXP);
+    Rcpp::traits::input_parameter< double >::type house_value(house_valueSEXP);
+    Rcpp::traits::input_parameter< int >::type death_age(death_ageSEXP);
+    Rcpp::traits::input_parameter< int >::type start_fy_ending(start_fy_endingSEXP);
+    Rcpp::traits::input_parameter< std::string >::type SG_rate_method(SG_rate_methodSEXP);
+    Rcpp::traits::input_parameter< std::string >::type drawDownMethod(drawDownMethodSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type minDrawDown6474(minDrawDown6474SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type minDrawDown7579(minDrawDown7579SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type minDrawDown8084(minDrawDown8084SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type minDrawDown8589(minDrawDown8589SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type minDrawDown9094(minDrawDown9094SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type minDrawDown9599(minDrawDown9599SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type short_run_wage_growth(short_run_wage_growthSEXP);
+    Rcpp::traits::input_parameter< double >::type long_run_wage_growth(long_run_wage_growthSEXP);
+    Rcpp::traits::input_parameter< double >::type long_run_cpi_growth(long_run_cpi_growthSEXP);
+    Rcpp::traits::input_parameter< double >::type initial_super_balance(initial_super_balanceSEXP);
+    Rcpp::traits::input_parameter< bool >::type apply_pretax_cap(apply_pretax_capSEXP);
+    Rcpp::traits::input_parameter< double >::type super_acct_fixed_fee(super_acct_fixed_feeSEXP);
+    Rcpp::traits::input_parameter< double >::type contributions_tax_rate(contributions_tax_rateSEXP);
+    Rcpp::traits::input_parameter< double >::type asset_earnings_accumulation(asset_earnings_accumulationSEXP);
+    Rcpp::traits::input_parameter< double >::type earnings_tax_accumulation(earnings_tax_accumulationSEXP);
+    Rcpp::traits::input_parameter< double >::type asset_earnings_pension(asset_earnings_pensionSEXP);
+    Rcpp::traits::input_parameter< double >::type earnings_tax_pension(earnings_tax_pensionSEXP);
+    Rcpp::traits::input_parameter< double >::type div293_threshold(div293_thresholdSEXP);
+    rcpp_result_gen = Rcpp::wrap(ReplacementRate(starting_age, retirement_age, wage_method, AWOTE_starting_year, AWOTE_percentage, percentile, homeowner, house_value, death_age, start_fy_ending, SG_rate_method, drawDownMethod, minDrawDown6474, minDrawDown7579, minDrawDown8084, minDrawDown8589, minDrawDown9094, minDrawDown9599, short_run_wage_growth, long_run_wage_growth, long_run_cpi_growth, initial_super_balance, apply_pretax_cap, super_acct_fixed_fee, contributions_tax_rate, asset_earnings_accumulation, earnings_tax_accumulation, asset_earnings_pension, earnings_tax_pension, div293_threshold));
+    return rcpp_result_gen;
+END_RCPP
+}
+// SuperBalanceViaPachinko
+double SuperBalanceViaPachinko(int age, int percentile, int starting_year, int retirement_age, int death_age, NumericVector short_run_wage_index, double long_run_wage_index, double long_term_CPI, double contribution_tax, double asset_earnings_accumulation, double earnings_tax_accumulation, double asset_earnings_pension, double earnings_tax_pension, double taxable_earnings, double super_account_fee_2015);
+RcppExport SEXP CRIMpp_SuperBalanceViaPachinko(SEXP ageSEXP, SEXP percentileSEXP, SEXP starting_yearSEXP, SEXP retirement_ageSEXP, SEXP death_ageSEXP, SEXP short_run_wage_indexSEXP, SEXP long_run_wage_indexSEXP, SEXP long_term_CPISEXP, SEXP contribution_taxSEXP, SEXP asset_earnings_accumulationSEXP, SEXP earnings_tax_accumulationSEXP, SEXP asset_earnings_pensionSEXP, SEXP earnings_tax_pensionSEXP, SEXP taxable_earningsSEXP, SEXP super_account_fee_2015SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type age(ageSEXP);
+    Rcpp::traits::input_parameter< int >::type percentile(percentileSEXP);
+    Rcpp::traits::input_parameter< int >::type starting_year(starting_yearSEXP);
+    Rcpp::traits::input_parameter< int >::type retirement_age(retirement_ageSEXP);
+    Rcpp::traits::input_parameter< int >::type death_age(death_ageSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type short_run_wage_index(short_run_wage_indexSEXP);
+    Rcpp::traits::input_parameter< double >::type long_run_wage_index(long_run_wage_indexSEXP);
+    Rcpp::traits::input_parameter< double >::type long_term_CPI(long_term_CPISEXP);
+    Rcpp::traits::input_parameter< double >::type contribution_tax(contribution_taxSEXP);
+    Rcpp::traits::input_parameter< double >::type asset_earnings_accumulation(asset_earnings_accumulationSEXP);
+    Rcpp::traits::input_parameter< double >::type earnings_tax_accumulation(earnings_tax_accumulationSEXP);
+    Rcpp::traits::input_parameter< double >::type asset_earnings_pension(asset_earnings_pensionSEXP);
+    Rcpp::traits::input_parameter< double >::type earnings_tax_pension(earnings_tax_pensionSEXP);
+    Rcpp::traits::input_parameter< double >::type taxable_earnings(taxable_earningsSEXP);
+    Rcpp::traits::input_parameter< double >::type super_account_fee_2015(super_account_fee_2015SEXP);
+    rcpp_result_gen = Rcpp::wrap(SuperBalanceViaPachinko(age, percentile, starting_year, retirement_age, death_age, short_run_wage_index, long_run_wage_index, long_term_CPI, contribution_tax, asset_earnings_accumulation, earnings_tax_accumulation, asset_earnings_pension, earnings_tax_pension, taxable_earnings, super_account_fee_2015));
     return rcpp_result_gen;
 END_RCPP
 }

@@ -1,4 +1,8 @@
 //' @title Income tax
+//' @description Income tax for a single worker.
+//' @param income The persons's income.
+//' @param thresholds Income tax brackets
+//' @param rates Marginal tax rates.
 //' @name IncomeTax
 //' @export IncomeTax
 
