@@ -2,10 +2,10 @@ Package: CRIMpp
 Type: Package
 Title: Model Retirement Incomes.
 Version: 0.1.0
-Authors@R: c(person("Hugh", "Parsonage", role = c("aut", "cre"), email = "hugh.parsonage+grattanPackage@grattaninstitute.edu.au"),
+Authors@R: c(person("Hugh", "Parsonage", role = c("aut", "cre"), email = "hugh.parsonage+CRIMPP@grattaninstitute.edu.au"),
               person("William", "Young", role = "aut"))
 Maintainer: Hugh Parsonage <hugh.parsonage+CRIMPP@gmail.com>
-Description: A Rcpp model of retirement incomes. Initially intended to model replacement rates, given starting conditions of an individual.
+Description: An 'Rcpp' model of retirement incomes. Initially intended to model replacement rates, given starting conditions of an individual.
 License: MIT + LICENSE
 LazyData: TRUE
 Depends: R (>= 2.10)
