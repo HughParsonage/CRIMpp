@@ -45,11 +45,13 @@ age_pension <- function(Assets, Income, HomeOwner, Age, Year) {
 #' @param short_run_wage_growth A vector of wage indices.
 #' @param long_run_wage_growth Rate of wage growth beyond short_run_wage_growth.
 #' @param starting_year The year to begin. Used for determining superannuation guarantee.
-#' @export AverageWorkingLifeIncome
-NULL
-
+#' @export AverageWorkingLifeIncome average_working_life_income
 AverageWorkingLifeIncome <- function(prop_of_AWOTE_start_year = 1, wage_method = "Constant prop AWOTE", deflator = "wage", scope = "entire", starting_age = 30L, retirement_age = 70L, AWOTE_in_starting_year = 78200.00, short_run_wage_growth = as.numeric( c(0.0225, 0.0250, 0.0275, 0.0325, 0.0350)), long_run_wage_growth = 0.0404, long_run_cpi_growth = 0.025, starting_year = 2016L, verbose = FALSE) {
     .Call('CRIMpp_AverageWorkingLifeIncome', PACKAGE = 'CRIMpp', prop_of_AWOTE_start_year, wage_method, deflator, scope, starting_age, retirement_age, AWOTE_in_starting_year, short_run_wage_growth, long_run_wage_growth, long_run_cpi_growth, starting_year, verbose)
+}
+
+average_working_life_income <- function(prop_of_AWOTE_start_year = 1L, wage_method = "Constant prop AWOTE", deflator = "wage", scope = "entire", starting_age = 30L, retirement_age = 70L, AWOTE_in_starting_year = 78200.00, short_run_wage_growth = as.numeric( c(0.0225, 0.0250, 0.0275, 0.0325, 0.0350)), long_run_wage_growth = 0.0404, long_run_cpi_growth = 0.025, starting_year = 2016L, verbose = FALSE) {
+    .Call('CRIMpp_average_working_life_income', PACKAGE = 'CRIMpp', prop_of_AWOTE_start_year, wage_method, deflator, scope, starting_age, retirement_age, AWOTE_in_starting_year, short_run_wage_growth, long_run_wage_growth, long_run_cpi_growth, starting_year, verbose)
 }
 
 #' @title Balance after n real level payments

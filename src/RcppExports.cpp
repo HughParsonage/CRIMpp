@@ -78,6 +78,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// average_working_life_income
+NumericVector average_working_life_income(NumericVector prop_of_AWOTE_start_year, std::string wage_method, std::string deflator, std::string scope, int starting_age, int retirement_age, double AWOTE_in_starting_year, NumericVector short_run_wage_growth, double long_run_wage_growth, double long_run_cpi_growth, int starting_year, bool verbose);
+RcppExport SEXP CRIMpp_average_working_life_income(SEXP prop_of_AWOTE_start_yearSEXP, SEXP wage_methodSEXP, SEXP deflatorSEXP, SEXP scopeSEXP, SEXP starting_ageSEXP, SEXP retirement_ageSEXP, SEXP AWOTE_in_starting_yearSEXP, SEXP short_run_wage_growthSEXP, SEXP long_run_wage_growthSEXP, SEXP long_run_cpi_growthSEXP, SEXP starting_yearSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type prop_of_AWOTE_start_year(prop_of_AWOTE_start_yearSEXP);
+    Rcpp::traits::input_parameter< std::string >::type wage_method(wage_methodSEXP);
+    Rcpp::traits::input_parameter< std::string >::type deflator(deflatorSEXP);
+    Rcpp::traits::input_parameter< std::string >::type scope(scopeSEXP);
+    Rcpp::traits::input_parameter< int >::type starting_age(starting_ageSEXP);
+    Rcpp::traits::input_parameter< int >::type retirement_age(retirement_ageSEXP);
+    Rcpp::traits::input_parameter< double >::type AWOTE_in_starting_year(AWOTE_in_starting_yearSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type short_run_wage_growth(short_run_wage_growthSEXP);
+    Rcpp::traits::input_parameter< double >::type long_run_wage_growth(long_run_wage_growthSEXP);
+    Rcpp::traits::input_parameter< double >::type long_run_cpi_growth(long_run_cpi_growthSEXP);
+    Rcpp::traits::input_parameter< int >::type starting_year(starting_yearSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(average_working_life_income(prop_of_AWOTE_start_year, wage_method, deflator, scope, starting_age, retirement_age, AWOTE_in_starting_year, short_run_wage_growth, long_run_wage_growth, long_run_cpi_growth, starting_year, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
 // BalanceAfterRealLevelPayments
 int BalanceAfterRealLevelPayments(int nominal_payment, int n, int balance, double r_earnings, double cpi, bool inArrears);
 RcppExport SEXP CRIMpp_BalanceAfterRealLevelPayments(SEXP nominal_paymentSEXP, SEXP nSEXP, SEXP balanceSEXP, SEXP r_earningsSEXP, SEXP cpiSEXP, SEXP inArrearsSEXP) {
