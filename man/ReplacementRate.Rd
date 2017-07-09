@@ -3,6 +3,26 @@
 \name{ReplacementRate}
 \alias{ReplacementRate}
 \title{Replacement rate}
+\usage{
+ReplacementRate(starting_age = 30L, retirement_age = 70L,
+  wage_method = "Constant prop AWOTE", starting_salary = 78200,
+  homeowner = TRUE, house_value = 250000, death_age = 92L,
+  start_fy_ending = 2016L, SG_rate_method = "Legislated",
+  drawDownMethod = "Min draw down", minDrawDown6474 = as.numeric(c(0.04,
+  0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04)),
+  minDrawDown7579 = as.numeric(c(0.05, 0.05, 0.05, 0.05, 0.05)),
+  minDrawDown8084 = as.numeric(c(0.06, 0.06, 0.06, 0.06, 0.06)),
+  minDrawDown8589 = as.numeric(c(0.07, 0.07, 0.07, 0.07, 0.07)),
+  minDrawDown9094 = as.numeric(c(0.08, 0.08, 0.08, 0.08, 0.08)),
+  minDrawDown9599 = as.numeric(c(0.11, 0.11, 0.11, 0.11, 0.11)),
+  short_run_wage_growth = as.numeric(c(0.0225, 0.025, 0.0275, 0.0325, 0.035)),
+  long_run_wage_growth = 0.0404, long_run_cpi_growth = 0.025,
+  initial_super_balance = 0, apply_pretax_cap = FALSE,
+  super_acct_fixed_fee = 320, contributions_tax_rate = 0.15,
+  asset_earnings_accumulation = 0.065, earnings_tax_accumulation = 0.15,
+  asset_earnings_pension = 0.055, earnings_tax_pension = 0,
+  div293_threshold = 250000, verbose = FALSE)
+}
 \arguments{
 \item{starting_age}{(Default: 30) The age in the first year of the model. Integer.}
 

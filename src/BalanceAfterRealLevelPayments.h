@@ -30,4 +30,7 @@ double AgePension (double assets,
                    double sinSupTot = 14.1,
                    double sinSupMin = 14.1,
                    double sinCesMax = 14.1);
+void showOutputt(const char* z, double x);
+void showRaw(const char* z);
+void showRawDbl (double z);
 #endif

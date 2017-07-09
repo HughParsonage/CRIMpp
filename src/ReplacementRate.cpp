@@ -1,12 +1,3 @@
-//' @title Replacement rate
-//' @name ReplacementRate
-//' @description Replacement rate.
-//' @param starting_age (Default: 30) The age in the first year of the model. Integer.
-//' @param retirement_age (Default: 70) Retirement age for the model. Integer.
-//' @param wage_method Constant proportion of AWOTE.
-//' @param AWOTE_starting_year The AWOTE for the starting year.
-//' @export ReplacementRate
-
 #include <Rcpp.h>
 #include "BalanceAfterRealLevelPayments.h"
 using namespace Rcpp;
@@ -14,6 +5,16 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 void showOutputt(const char* z, double x) {
   Rcout << z << x << std::endl;
+}
+
+// [[Rcpp:export]]
+void showRaw(const char* z) {
+  Rcout << z;
+}
+
+// [[Rcpp:export]]
+void showRawDbl (double z) {
+  Rcout << z;
 }
 
 // [[Rcpp::export]]
@@ -28,14 +29,19 @@ double Listo (double adjusted_income, double contributions, double threshold, do
   }
   return out;
 }
-
+//' @title Replacement rate
+//' @name ReplacementRate
+//' @description Replacement rate.
+//' @param starting_age (Default: 30) The age in the first year of the model. Integer.
+//' @param retirement_age (Default: 70) Retirement age for the model. Integer.
+//' @param wage_method Constant proportion of AWOTE.
+//' @param AWOTE_starting_year The AWOTE for the starting year.
+//' @export ReplacementRate
 // [[Rcpp::export]]
 double ReplacementRate(int starting_age = 30,
                        int retirement_age = 70,
                        std::string wage_method = "Constant prop AWOTE",
-                       double AWOTE_starting_year = 78200,
-                       double AWOTE_percentage = 100,
-                       int percentile = 100,
+                       double starting_salary = 78200,
                        bool homeowner = true,
                        double house_value = 250000,
                        int death_age = 92,
@@ -59,7 +65,8 @@ double ReplacementRate(int starting_age = 30,
                        double earnings_tax_accumulation = 0.15,
                        double asset_earnings_pension = 0.0550,
                        double earnings_tax_pension = 0.0,
-                       double div293_threshold = 250000) {
+                       double div293_threshold = 250000,
+                       bool verbose = false) {
   // Preliminary
   NumericVector minDrawDown = NumericVector(minDrawDown6474.length() + minDrawDown7579.length() + minDrawDown8084.length() + minDrawDown8589.length() + minDrawDown9094.length() + minDrawDown9599.length());
   for (int m = 0; m < minDrawDown6474.length(); ++m) {
@@ -92,7 +99,7 @@ double ReplacementRate(int starting_age = 30,
   
   
   // Income
-  double salary = AWOTE_starting_year;
+  double salary = starting_salary;
   double SG_rate = 0.095;
   
   if (SG_rate_method == "Legislated") {
@@ -330,10 +337,12 @@ double ReplacementRate(int starting_age = 30,
       closing_balance_eoy += balance_inflow;
       closing_balance_eoy -= accumulation_phase_earnings_tax;
       
-      // showOutputt("Inflow:\t", balance_inflow);
-      // showOutputt("Earnings:\t", accumulation_phase_earnings);
-      // showOutputt("Earnings tax:\t", accumulation_phase_earnings_tax);
-      // showOutputt("Closing balance:\t", closing_balance_eoy);
+      if (verbose) {
+        showOutputt("Inflow:\t", balance_inflow);
+        showOutputt("Earnings:\t", accumulation_phase_earnings);
+        showOutputt("Earnings tax:\t", accumulation_phase_earnings_tax);
+        showOutputt("Closing balance:\t", closing_balance_eoy);
+      }
       
     }
     
@@ -399,13 +408,44 @@ double ReplacementRate(int starting_age = 30,
       if (penMaxRateS < 0.277 * PensionBenchmark) {
         penMaxRateS = 0.277 * PensionBenchmark;
       }
-      age_pension = AgePension(Assessable_assets, Assessable_income, age, year, homeowner, sinRaMax, penMaxRateS);
+      
+      // double sinRaMax = 129.4,
+      //   double sinMaxRate = 788.4,
+      //   double sinAssHomeThr = 202000,
+      //   double sinAssNonHomeThr = 348500,
+      //   double pensAssTpr = 0.015,
+      //   double sinIncThr = 162,
+      //   double pensIncTpr = 0.50,
+      //   double sinSupTot = 14.1,
+      //   double sinSupMin = 14.1,
+      //   double sinCesMax = 14.1) {
+      age_pension = AgePension(Assessable_assets, 
+                               Assessable_income,
+                               homeowner,
+                               age,
+                               year,
+                               sinRaMax, 
+                               penMaxRateS,
+                               penAssHOThrS,
+                               penAssNonHOThrS,
+                               pensAssTpr,
+                               pensIncTpr,
+                               penSupTotS,
+                               penSupMinS,
+                               sinCesMax);
+      age_pension = AgePension(Assessable_assets, Assessable_income, homeowner, age, year,
+                               sinRaMax, penMaxRateS, penAssHOThrS,
+                               penAssNonHOThrS, pensAssTpr,
+                               pensIncTpr, penSupTotS);
       
       total_retirement_income_nominal = age_pension + Assessable_income;
       
       total_retirement_income_real = total_retirement_income_nominal / wage_index;
       total_retirement_income_average += (total_retirement_income_real - total_retirement_income_average) / j;
       total_lifetime_retirement_income += total_retirement_income_real;
+      if (verbose) {
+        showOutputt("Average Retirement income:\t", total_retirement_income_average);
+      }
       
       closing_balance_eoy -= pension_phase_draw_down;
       closing_balance_eoy -= pension_phase_earnings_tax;

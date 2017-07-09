@@ -56,6 +56,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// AverageWorkingLifeIncome
+double AverageWorkingLifeIncome(double prop_of_AWOTE_start_year, std::string wage_method, std::string deflator, std::string scope, int starting_age, int retirement_age, double AWOTE_in_starting_year, NumericVector short_run_wage_growth, double long_run_wage_growth, double long_run_cpi_growth, int starting_year, bool verbose);
+RcppExport SEXP CRIMpp_AverageWorkingLifeIncome(SEXP prop_of_AWOTE_start_yearSEXP, SEXP wage_methodSEXP, SEXP deflatorSEXP, SEXP scopeSEXP, SEXP starting_ageSEXP, SEXP retirement_ageSEXP, SEXP AWOTE_in_starting_yearSEXP, SEXP short_run_wage_growthSEXP, SEXP long_run_wage_growthSEXP, SEXP long_run_cpi_growthSEXP, SEXP starting_yearSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type prop_of_AWOTE_start_year(prop_of_AWOTE_start_yearSEXP);
+    Rcpp::traits::input_parameter< std::string >::type wage_method(wage_methodSEXP);
+    Rcpp::traits::input_parameter< std::string >::type deflator(deflatorSEXP);
+    Rcpp::traits::input_parameter< std::string >::type scope(scopeSEXP);
+    Rcpp::traits::input_parameter< int >::type starting_age(starting_ageSEXP);
+    Rcpp::traits::input_parameter< int >::type retirement_age(retirement_ageSEXP);
+    Rcpp::traits::input_parameter< double >::type AWOTE_in_starting_year(AWOTE_in_starting_yearSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type short_run_wage_growth(short_run_wage_growthSEXP);
+    Rcpp::traits::input_parameter< double >::type long_run_wage_growth(long_run_wage_growthSEXP);
+    Rcpp::traits::input_parameter< double >::type long_run_cpi_growth(long_run_cpi_growthSEXP);
+    Rcpp::traits::input_parameter< int >::type starting_year(starting_yearSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(AverageWorkingLifeIncome(prop_of_AWOTE_start_year, wage_method, deflator, scope, starting_age, retirement_age, AWOTE_in_starting_year, short_run_wage_growth, long_run_wage_growth, long_run_cpi_growth, starting_year, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
 // BalanceAfterRealLevelPayments
 int BalanceAfterRealLevelPayments(int nominal_payment, int n, int balance, double r_earnings, double cpi, bool inArrears);
 RcppExport SEXP CRIMpp_BalanceAfterRealLevelPayments(SEXP nominal_paymentSEXP, SEXP nSEXP, SEXP balanceSEXP, SEXP r_earningsSEXP, SEXP cpiSEXP, SEXP inArrearsSEXP) {
@@ -136,17 +158,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // ReplacementRate
-double ReplacementRate(int starting_age, int retirement_age, std::string wage_method, double AWOTE_starting_year, double AWOTE_percentage, int percentile, bool homeowner, double house_value, int death_age, int start_fy_ending, std::string SG_rate_method, std::string drawDownMethod, NumericVector minDrawDown6474, NumericVector minDrawDown7579, NumericVector minDrawDown8084, NumericVector minDrawDown8589, NumericVector minDrawDown9094, NumericVector minDrawDown9599, NumericVector short_run_wage_growth, double long_run_wage_growth, double long_run_cpi_growth, double initial_super_balance, bool apply_pretax_cap, double super_acct_fixed_fee, double contributions_tax_rate, double asset_earnings_accumulation, double earnings_tax_accumulation, double asset_earnings_pension, double earnings_tax_pension, double div293_threshold);
-RcppExport SEXP CRIMpp_ReplacementRate(SEXP starting_ageSEXP, SEXP retirement_ageSEXP, SEXP wage_methodSEXP, SEXP AWOTE_starting_yearSEXP, SEXP AWOTE_percentageSEXP, SEXP percentileSEXP, SEXP homeownerSEXP, SEXP house_valueSEXP, SEXP death_ageSEXP, SEXP start_fy_endingSEXP, SEXP SG_rate_methodSEXP, SEXP drawDownMethodSEXP, SEXP minDrawDown6474SEXP, SEXP minDrawDown7579SEXP, SEXP minDrawDown8084SEXP, SEXP minDrawDown8589SEXP, SEXP minDrawDown9094SEXP, SEXP minDrawDown9599SEXP, SEXP short_run_wage_growthSEXP, SEXP long_run_wage_growthSEXP, SEXP long_run_cpi_growthSEXP, SEXP initial_super_balanceSEXP, SEXP apply_pretax_capSEXP, SEXP super_acct_fixed_feeSEXP, SEXP contributions_tax_rateSEXP, SEXP asset_earnings_accumulationSEXP, SEXP earnings_tax_accumulationSEXP, SEXP asset_earnings_pensionSEXP, SEXP earnings_tax_pensionSEXP, SEXP div293_thresholdSEXP) {
+double ReplacementRate(int starting_age, int retirement_age, std::string wage_method, double starting_salary, bool homeowner, double house_value, int death_age, int start_fy_ending, std::string SG_rate_method, std::string drawDownMethod, NumericVector minDrawDown6474, NumericVector minDrawDown7579, NumericVector minDrawDown8084, NumericVector minDrawDown8589, NumericVector minDrawDown9094, NumericVector minDrawDown9599, NumericVector short_run_wage_growth, double long_run_wage_growth, double long_run_cpi_growth, double initial_super_balance, bool apply_pretax_cap, double super_acct_fixed_fee, double contributions_tax_rate, double asset_earnings_accumulation, double earnings_tax_accumulation, double asset_earnings_pension, double earnings_tax_pension, double div293_threshold, bool verbose);
+RcppExport SEXP CRIMpp_ReplacementRate(SEXP starting_ageSEXP, SEXP retirement_ageSEXP, SEXP wage_methodSEXP, SEXP starting_salarySEXP, SEXP homeownerSEXP, SEXP house_valueSEXP, SEXP death_ageSEXP, SEXP start_fy_endingSEXP, SEXP SG_rate_methodSEXP, SEXP drawDownMethodSEXP, SEXP minDrawDown6474SEXP, SEXP minDrawDown7579SEXP, SEXP minDrawDown8084SEXP, SEXP minDrawDown8589SEXP, SEXP minDrawDown9094SEXP, SEXP minDrawDown9599SEXP, SEXP short_run_wage_growthSEXP, SEXP long_run_wage_growthSEXP, SEXP long_run_cpi_growthSEXP, SEXP initial_super_balanceSEXP, SEXP apply_pretax_capSEXP, SEXP super_acct_fixed_feeSEXP, SEXP contributions_tax_rateSEXP, SEXP asset_earnings_accumulationSEXP, SEXP earnings_tax_accumulationSEXP, SEXP asset_earnings_pensionSEXP, SEXP earnings_tax_pensionSEXP, SEXP div293_thresholdSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type starting_age(starting_ageSEXP);
     Rcpp::traits::input_parameter< int >::type retirement_age(retirement_ageSEXP);
     Rcpp::traits::input_parameter< std::string >::type wage_method(wage_methodSEXP);
-    Rcpp::traits::input_parameter< double >::type AWOTE_starting_year(AWOTE_starting_yearSEXP);
-    Rcpp::traits::input_parameter< double >::type AWOTE_percentage(AWOTE_percentageSEXP);
-    Rcpp::traits::input_parameter< int >::type percentile(percentileSEXP);
+    Rcpp::traits::input_parameter< double >::type starting_salary(starting_salarySEXP);
     Rcpp::traits::input_parameter< bool >::type homeowner(homeownerSEXP);
     Rcpp::traits::input_parameter< double >::type house_value(house_valueSEXP);
     Rcpp::traits::input_parameter< int >::type death_age(death_ageSEXP);
@@ -171,7 +191,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type asset_earnings_pension(asset_earnings_pensionSEXP);
     Rcpp::traits::input_parameter< double >::type earnings_tax_pension(earnings_tax_pensionSEXP);
     Rcpp::traits::input_parameter< double >::type div293_threshold(div293_thresholdSEXP);
-    rcpp_result_gen = Rcpp::wrap(ReplacementRate(starting_age, retirement_age, wage_method, AWOTE_starting_year, AWOTE_percentage, percentile, homeowner, house_value, death_age, start_fy_ending, SG_rate_method, drawDownMethod, minDrawDown6474, minDrawDown7579, minDrawDown8084, minDrawDown8589, minDrawDown9094, minDrawDown9599, short_run_wage_growth, long_run_wage_growth, long_run_cpi_growth, initial_super_balance, apply_pretax_cap, super_acct_fixed_fee, contributions_tax_rate, asset_earnings_accumulation, earnings_tax_accumulation, asset_earnings_pension, earnings_tax_pension, div293_threshold));
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(ReplacementRate(starting_age, retirement_age, wage_method, starting_salary, homeowner, house_value, death_age, start_fy_ending, SG_rate_method, drawDownMethod, minDrawDown6474, minDrawDown7579, minDrawDown8084, minDrawDown8589, minDrawDown9094, minDrawDown9599, short_run_wage_growth, long_run_wage_growth, long_run_cpi_growth, initial_super_balance, apply_pretax_cap, super_acct_fixed_fee, contributions_tax_rate, asset_earnings_accumulation, earnings_tax_accumulation, asset_earnings_pension, earnings_tax_pension, div293_threshold, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
