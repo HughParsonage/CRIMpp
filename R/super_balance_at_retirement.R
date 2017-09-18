@@ -38,14 +38,15 @@ super_balance_at_retirement <- function(starting_age = 30L,
 
 
 
-  balance <- plus(lag(balance),
-                  total_concessional_contributions,
-                  total_nonconcessional_contributions,
-                  LISTO,
-                  -ordinary_contributions_tax,
-                  -div293_tax,
-                  -excess_contributions_tax,
-                  super_earnings,
-                  -super_earnings_tax)
+  balance <- 
+    shift(balance) +
+    total_concessional_contributions +
+    total_nonconcessional_contributions +
+    LISTO +
+    -ordinary_contributions_tax +
+    -div293_tax +
+    -excess_contributions_tax +
+    super_earnings +
+    -super_earnings_tax
 
 }

@@ -35,7 +35,26 @@ double Listo (double adjusted_income, double contributions, double threshold, do
 //' @param starting_age (Default: 30) The age in the first year of the model. Integer.
 //' @param retirement_age (Default: 70) Retirement age for the model. Integer.
 //' @param wage_method Constant proportion of AWOTE.
-//' @param AWOTE_starting_year The AWOTE for the starting year.
+//' @param starting_salary The AWOTE for the starting year.
+//' @param homeowner Is the person a home-owner?
+//' @param house_value What is the value of the home owned by the person?
+//' @param death_age Age of death.
+//' @param start_fy_ending Year ending of the financial year at the start of the model.
+//' @param SG_rate_method Rate of determining the super guarantee.
+//' @param drawDownMethod Method of draw down.
+//' @param minDrawDown6474,minDrawDown7579,minDrawDown8084,minDrawDown8589,minDrawDown9094,minDrawDown9599 Minimum draw-down rates for the given ages.
+//' @param short_run_wage_growth Vector of rates of wage growth for the first five years.
+//' @param long_run_wage_growth,long_run_cpi_growth Rate of wage/cpi growth beyond five years.
+//' @param initial_super_balance Super balance in first year.
+//' @param apply_pretax_cap Should the pre-tax cap be applied?
+//' @param super_acct_fixed_fee The fixed fee for the person's super account.
+//' @param contributions_tax_rate Rate of contributions tax.
+//' @param asset_earnings_accumulation Rate of asset growth in the accumulation phase.
+//' @param earnings_tax_accumulation Rate of tax on earnings in the accumulation phase.
+//' @param asset_earnings_pension Rate of asset growth in the pension phase.
+//' @param earnings_tax_pension Rate of tax on earnings in the pension phase.
+//' @param div293_threshold Threshold for Division 293 phase.
+//' @param verbose Report progress and internal calculations yearly.
 //' @export ReplacementRate
 // [[Rcpp::export]]
 double ReplacementRate(int starting_age = 30,

@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // pensionAge
 int pensionAge(int year);
-RcppExport SEXP CRIMpp_pensionAge(SEXP yearSEXP) {
+RcppExport SEXP _CRIMpp_pensionAge(SEXP yearSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,7 +18,7 @@ END_RCPP
 }
 // AgePension
 double AgePension(double assets, double income, bool homeOwner, int age, int year, double sinRaMax, double sinMaxRate, double sinAssHomeThr, double sinAssNonHomeThr, double pensAssTpr, double sinIncThr, double pensIncTpr, double sinSupTot, double sinSupMin, double sinCesMax);
-RcppExport SEXP CRIMpp_AgePension(SEXP assetsSEXP, SEXP incomeSEXP, SEXP homeOwnerSEXP, SEXP ageSEXP, SEXP yearSEXP, SEXP sinRaMaxSEXP, SEXP sinMaxRateSEXP, SEXP sinAssHomeThrSEXP, SEXP sinAssNonHomeThrSEXP, SEXP pensAssTprSEXP, SEXP sinIncThrSEXP, SEXP pensIncTprSEXP, SEXP sinSupTotSEXP, SEXP sinSupMinSEXP, SEXP sinCesMaxSEXP) {
+RcppExport SEXP _CRIMpp_AgePension(SEXP assetsSEXP, SEXP incomeSEXP, SEXP homeOwnerSEXP, SEXP ageSEXP, SEXP yearSEXP, SEXP sinRaMaxSEXP, SEXP sinMaxRateSEXP, SEXP sinAssHomeThrSEXP, SEXP sinAssNonHomeThrSEXP, SEXP pensAssTprSEXP, SEXP sinIncThrSEXP, SEXP pensIncTprSEXP, SEXP sinSupTotSEXP, SEXP sinSupMinSEXP, SEXP sinCesMaxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -43,7 +43,7 @@ END_RCPP
 }
 // age_pension
 NumericVector age_pension(NumericVector Assets, NumericVector Income, LogicalVector HomeOwner, IntegerVector Age, IntegerVector Year);
-RcppExport SEXP CRIMpp_age_pension(SEXP AssetsSEXP, SEXP IncomeSEXP, SEXP HomeOwnerSEXP, SEXP AgeSEXP, SEXP YearSEXP) {
+RcppExport SEXP _CRIMpp_age_pension(SEXP AssetsSEXP, SEXP IncomeSEXP, SEXP HomeOwnerSEXP, SEXP AgeSEXP, SEXP YearSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -58,7 +58,7 @@ END_RCPP
 }
 // AverageWorkingLifeIncome
 double AverageWorkingLifeIncome(double prop_of_AWOTE_start_year, std::string wage_method, std::string deflator, std::string scope, int starting_age, int retirement_age, double AWOTE_in_starting_year, NumericVector short_run_wage_growth, double long_run_wage_growth, double long_run_cpi_growth, int starting_year, bool verbose);
-RcppExport SEXP CRIMpp_AverageWorkingLifeIncome(SEXP prop_of_AWOTE_start_yearSEXP, SEXP wage_methodSEXP, SEXP deflatorSEXP, SEXP scopeSEXP, SEXP starting_ageSEXP, SEXP retirement_ageSEXP, SEXP AWOTE_in_starting_yearSEXP, SEXP short_run_wage_growthSEXP, SEXP long_run_wage_growthSEXP, SEXP long_run_cpi_growthSEXP, SEXP starting_yearSEXP, SEXP verboseSEXP) {
+RcppExport SEXP _CRIMpp_AverageWorkingLifeIncome(SEXP prop_of_AWOTE_start_yearSEXP, SEXP wage_methodSEXP, SEXP deflatorSEXP, SEXP scopeSEXP, SEXP starting_ageSEXP, SEXP retirement_ageSEXP, SEXP AWOTE_in_starting_yearSEXP, SEXP short_run_wage_growthSEXP, SEXP long_run_wage_growthSEXP, SEXP long_run_cpi_growthSEXP, SEXP starting_yearSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -80,7 +80,7 @@ END_RCPP
 }
 // average_working_life_income
 NumericVector average_working_life_income(NumericVector prop_of_AWOTE_start_year, std::string wage_method, std::string deflator, std::string scope, int starting_age, int retirement_age, double AWOTE_in_starting_year, NumericVector short_run_wage_growth, double long_run_wage_growth, double long_run_cpi_growth, int starting_year, bool verbose);
-RcppExport SEXP CRIMpp_average_working_life_income(SEXP prop_of_AWOTE_start_yearSEXP, SEXP wage_methodSEXP, SEXP deflatorSEXP, SEXP scopeSEXP, SEXP starting_ageSEXP, SEXP retirement_ageSEXP, SEXP AWOTE_in_starting_yearSEXP, SEXP short_run_wage_growthSEXP, SEXP long_run_wage_growthSEXP, SEXP long_run_cpi_growthSEXP, SEXP starting_yearSEXP, SEXP verboseSEXP) {
+RcppExport SEXP _CRIMpp_average_working_life_income(SEXP prop_of_AWOTE_start_yearSEXP, SEXP wage_methodSEXP, SEXP deflatorSEXP, SEXP scopeSEXP, SEXP starting_ageSEXP, SEXP retirement_ageSEXP, SEXP AWOTE_in_starting_yearSEXP, SEXP short_run_wage_growthSEXP, SEXP long_run_wage_growthSEXP, SEXP long_run_cpi_growthSEXP, SEXP starting_yearSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -102,7 +102,7 @@ END_RCPP
 }
 // BalanceAfterRealLevelPayments
 int BalanceAfterRealLevelPayments(int nominal_payment, int n, int balance, double r_earnings, double cpi, bool inArrears);
-RcppExport SEXP CRIMpp_BalanceAfterRealLevelPayments(SEXP nominal_paymentSEXP, SEXP nSEXP, SEXP balanceSEXP, SEXP r_earningsSEXP, SEXP cpiSEXP, SEXP inArrearsSEXP) {
+RcppExport SEXP _CRIMpp_BalanceAfterRealLevelPayments(SEXP nominal_paymentSEXP, SEXP nSEXP, SEXP balanceSEXP, SEXP r_earningsSEXP, SEXP cpiSEXP, SEXP inArrearsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -118,7 +118,7 @@ END_RCPP
 }
 // IncomeTax
 double IncomeTax(double income, NumericVector thresholds, NumericVector rates, double litoThr, double litoMax, double litoTaper, double saptoThr, double saptoMax, double saptoTaper, double medLevyRate, double medLevyThr, double medLevyShade, bool sapto_eligible);
-RcppExport SEXP CRIMpp_IncomeTax(SEXP incomeSEXP, SEXP thresholdsSEXP, SEXP ratesSEXP, SEXP litoThrSEXP, SEXP litoMaxSEXP, SEXP litoTaperSEXP, SEXP saptoThrSEXP, SEXP saptoMaxSEXP, SEXP saptoTaperSEXP, SEXP medLevyRateSEXP, SEXP medLevyThrSEXP, SEXP medLevyShadeSEXP, SEXP sapto_eligibleSEXP) {
+RcppExport SEXP _CRIMpp_IncomeTax(SEXP incomeSEXP, SEXP thresholdsSEXP, SEXP ratesSEXP, SEXP litoThrSEXP, SEXP litoMaxSEXP, SEXP litoTaperSEXP, SEXP saptoThrSEXP, SEXP saptoMaxSEXP, SEXP saptoTaperSEXP, SEXP medLevyRateSEXP, SEXP medLevyThrSEXP, SEXP medLevyShadeSEXP, SEXP sapto_eligibleSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -141,7 +141,7 @@ END_RCPP
 }
 // RealPensionLevel
 int RealPensionLevel(int n, int balance, double r_earnings, double cpi, bool inArrears);
-RcppExport SEXP CRIMpp_RealPensionLevel(SEXP nSEXP, SEXP balanceSEXP, SEXP r_earningsSEXP, SEXP cpiSEXP, SEXP inArrearsSEXP) {
+RcppExport SEXP _CRIMpp_RealPensionLevel(SEXP nSEXP, SEXP balanceSEXP, SEXP r_earningsSEXP, SEXP cpiSEXP, SEXP inArrearsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -156,7 +156,7 @@ END_RCPP
 }
 // showOutputt
 void showOutputt(const char* z, double x);
-RcppExport SEXP CRIMpp_showOutputt(SEXP zSEXP, SEXP xSEXP) {
+RcppExport SEXP _CRIMpp_showOutputt(SEXP zSEXP, SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const char* >::type z(zSEXP);
@@ -167,7 +167,7 @@ END_RCPP
 }
 // Listo
 double Listo(double adjusted_income, double contributions, double threshold, double max_listo);
-RcppExport SEXP CRIMpp_Listo(SEXP adjusted_incomeSEXP, SEXP contributionsSEXP, SEXP thresholdSEXP, SEXP max_listoSEXP) {
+RcppExport SEXP _CRIMpp_Listo(SEXP adjusted_incomeSEXP, SEXP contributionsSEXP, SEXP thresholdSEXP, SEXP max_listoSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -181,7 +181,7 @@ END_RCPP
 }
 // ReplacementRate
 double ReplacementRate(int starting_age, int retirement_age, std::string wage_method, double starting_salary, bool homeowner, double house_value, int death_age, int start_fy_ending, std::string SG_rate_method, std::string drawDownMethod, NumericVector minDrawDown6474, NumericVector minDrawDown7579, NumericVector minDrawDown8084, NumericVector minDrawDown8589, NumericVector minDrawDown9094, NumericVector minDrawDown9599, NumericVector short_run_wage_growth, double long_run_wage_growth, double long_run_cpi_growth, double initial_super_balance, bool apply_pretax_cap, double super_acct_fixed_fee, double contributions_tax_rate, double asset_earnings_accumulation, double earnings_tax_accumulation, double asset_earnings_pension, double earnings_tax_pension, double div293_threshold, bool verbose);
-RcppExport SEXP CRIMpp_ReplacementRate(SEXP starting_ageSEXP, SEXP retirement_ageSEXP, SEXP wage_methodSEXP, SEXP starting_salarySEXP, SEXP homeownerSEXP, SEXP house_valueSEXP, SEXP death_ageSEXP, SEXP start_fy_endingSEXP, SEXP SG_rate_methodSEXP, SEXP drawDownMethodSEXP, SEXP minDrawDown6474SEXP, SEXP minDrawDown7579SEXP, SEXP minDrawDown8084SEXP, SEXP minDrawDown8589SEXP, SEXP minDrawDown9094SEXP, SEXP minDrawDown9599SEXP, SEXP short_run_wage_growthSEXP, SEXP long_run_wage_growthSEXP, SEXP long_run_cpi_growthSEXP, SEXP initial_super_balanceSEXP, SEXP apply_pretax_capSEXP, SEXP super_acct_fixed_feeSEXP, SEXP contributions_tax_rateSEXP, SEXP asset_earnings_accumulationSEXP, SEXP earnings_tax_accumulationSEXP, SEXP asset_earnings_pensionSEXP, SEXP earnings_tax_pensionSEXP, SEXP div293_thresholdSEXP, SEXP verboseSEXP) {
+RcppExport SEXP _CRIMpp_ReplacementRate(SEXP starting_ageSEXP, SEXP retirement_ageSEXP, SEXP wage_methodSEXP, SEXP starting_salarySEXP, SEXP homeownerSEXP, SEXP house_valueSEXP, SEXP death_ageSEXP, SEXP start_fy_endingSEXP, SEXP SG_rate_methodSEXP, SEXP drawDownMethodSEXP, SEXP minDrawDown6474SEXP, SEXP minDrawDown7579SEXP, SEXP minDrawDown8084SEXP, SEXP minDrawDown8589SEXP, SEXP minDrawDown9094SEXP, SEXP minDrawDown9599SEXP, SEXP short_run_wage_growthSEXP, SEXP long_run_wage_growthSEXP, SEXP long_run_cpi_growthSEXP, SEXP initial_super_balanceSEXP, SEXP apply_pretax_capSEXP, SEXP super_acct_fixed_feeSEXP, SEXP contributions_tax_rateSEXP, SEXP asset_earnings_accumulationSEXP, SEXP earnings_tax_accumulationSEXP, SEXP asset_earnings_pensionSEXP, SEXP earnings_tax_pensionSEXP, SEXP div293_thresholdSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -220,7 +220,7 @@ END_RCPP
 }
 // SuperBalanceViaPachinko
 double SuperBalanceViaPachinko(int age, int percentile, int starting_year, int retirement_age, int death_age, NumericVector short_run_wage_index, double long_run_wage_index, double long_term_CPI, double contribution_tax, double asset_earnings_accumulation, double earnings_tax_accumulation, double asset_earnings_pension, double earnings_tax_pension, double taxable_earnings, double super_account_fee_2015);
-RcppExport SEXP CRIMpp_SuperBalanceViaPachinko(SEXP ageSEXP, SEXP percentileSEXP, SEXP starting_yearSEXP, SEXP retirement_ageSEXP, SEXP death_ageSEXP, SEXP short_run_wage_indexSEXP, SEXP long_run_wage_indexSEXP, SEXP long_term_CPISEXP, SEXP contribution_taxSEXP, SEXP asset_earnings_accumulationSEXP, SEXP earnings_tax_accumulationSEXP, SEXP asset_earnings_pensionSEXP, SEXP earnings_tax_pensionSEXP, SEXP taxable_earningsSEXP, SEXP super_account_fee_2015SEXP) {
+RcppExport SEXP _CRIMpp_SuperBalanceViaPachinko(SEXP ageSEXP, SEXP percentileSEXP, SEXP starting_yearSEXP, SEXP retirement_ageSEXP, SEXP death_ageSEXP, SEXP short_run_wage_indexSEXP, SEXP long_run_wage_indexSEXP, SEXP long_term_CPISEXP, SEXP contribution_taxSEXP, SEXP asset_earnings_accumulationSEXP, SEXP earnings_tax_accumulationSEXP, SEXP asset_earnings_pensionSEXP, SEXP earnings_tax_pensionSEXP, SEXP taxable_earningsSEXP, SEXP super_account_fee_2015SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -245,7 +245,7 @@ END_RCPP
 }
 // showOutput
 void showOutput(double x);
-RcppExport SEXP CRIMpp_showOutput(SEXP xSEXP) {
+RcppExport SEXP _CRIMpp_showOutput(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type x(xSEXP);
@@ -255,7 +255,7 @@ END_RCPP
 }
 // SuperBalanceAtRetirement
 double SuperBalanceAtRetirement(double AWOTE_starting_year, double start_balance, std::string deflator, int starting_age, int starting_year, int retirement_age, int death_age, NumericVector short_run_wage_index, double long_run_wage_index, double long_term_CPI, double contribution_tax, double asset_earnings_accumulation, double earnings_tax_accumulation, double asset_earnings_pension, double earnings_tax_pension, double taxable_earnings, double super_account_fee_2015);
-RcppExport SEXP CRIMpp_SuperBalanceAtRetirement(SEXP AWOTE_starting_yearSEXP, SEXP start_balanceSEXP, SEXP deflatorSEXP, SEXP starting_ageSEXP, SEXP starting_yearSEXP, SEXP retirement_ageSEXP, SEXP death_ageSEXP, SEXP short_run_wage_indexSEXP, SEXP long_run_wage_indexSEXP, SEXP long_term_CPISEXP, SEXP contribution_taxSEXP, SEXP asset_earnings_accumulationSEXP, SEXP earnings_tax_accumulationSEXP, SEXP asset_earnings_pensionSEXP, SEXP earnings_tax_pensionSEXP, SEXP taxable_earningsSEXP, SEXP super_account_fee_2015SEXP) {
+RcppExport SEXP _CRIMpp_SuperBalanceAtRetirement(SEXP AWOTE_starting_yearSEXP, SEXP start_balanceSEXP, SEXP deflatorSEXP, SEXP starting_ageSEXP, SEXP starting_yearSEXP, SEXP retirement_ageSEXP, SEXP death_ageSEXP, SEXP short_run_wage_indexSEXP, SEXP long_run_wage_indexSEXP, SEXP long_term_CPISEXP, SEXP contribution_taxSEXP, SEXP asset_earnings_accumulationSEXP, SEXP earnings_tax_accumulationSEXP, SEXP asset_earnings_pensionSEXP, SEXP earnings_tax_pensionSEXP, SEXP taxable_earningsSEXP, SEXP super_account_fee_2015SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -279,4 +279,27 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(SuperBalanceAtRetirement(AWOTE_starting_year, start_balance, deflator, starting_age, starting_year, retirement_age, death_age, short_run_wage_index, long_run_wage_index, long_term_CPI, contribution_tax, asset_earnings_accumulation, earnings_tax_accumulation, asset_earnings_pension, earnings_tax_pension, taxable_earnings, super_account_fee_2015));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_CRIMpp_pensionAge", (DL_FUNC) &_CRIMpp_pensionAge, 1},
+    {"_CRIMpp_AgePension", (DL_FUNC) &_CRIMpp_AgePension, 15},
+    {"_CRIMpp_age_pension", (DL_FUNC) &_CRIMpp_age_pension, 5},
+    {"_CRIMpp_AverageWorkingLifeIncome", (DL_FUNC) &_CRIMpp_AverageWorkingLifeIncome, 12},
+    {"_CRIMpp_average_working_life_income", (DL_FUNC) &_CRIMpp_average_working_life_income, 12},
+    {"_CRIMpp_BalanceAfterRealLevelPayments", (DL_FUNC) &_CRIMpp_BalanceAfterRealLevelPayments, 6},
+    {"_CRIMpp_IncomeTax", (DL_FUNC) &_CRIMpp_IncomeTax, 13},
+    {"_CRIMpp_RealPensionLevel", (DL_FUNC) &_CRIMpp_RealPensionLevel, 5},
+    {"_CRIMpp_showOutputt", (DL_FUNC) &_CRIMpp_showOutputt, 2},
+    {"_CRIMpp_Listo", (DL_FUNC) &_CRIMpp_Listo, 4},
+    {"_CRIMpp_ReplacementRate", (DL_FUNC) &_CRIMpp_ReplacementRate, 29},
+    {"_CRIMpp_SuperBalanceViaPachinko", (DL_FUNC) &_CRIMpp_SuperBalanceViaPachinko, 15},
+    {"_CRIMpp_showOutput", (DL_FUNC) &_CRIMpp_showOutput, 1},
+    {"_CRIMpp_SuperBalanceAtRetirement", (DL_FUNC) &_CRIMpp_SuperBalanceAtRetirement, 17},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_CRIMpp(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

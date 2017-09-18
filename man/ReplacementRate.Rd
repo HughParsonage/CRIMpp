@@ -30,7 +30,45 @@ ReplacementRate(starting_age = 30L, retirement_age = 70L,
 
 \item{wage_method}{Constant proportion of AWOTE.}
 
-\item{AWOTE_starting_year}{The AWOTE for the starting year.}
+\item{starting_salary}{The AWOTE for the starting year.}
+
+\item{homeowner}{Is the person a home-owner?}
+
+\item{house_value}{What is the value of the home owned by the person?}
+
+\item{death_age}{Age of death.}
+
+\item{start_fy_ending}{Year ending of the financial year at the start of the model.}
+
+\item{SG_rate_method}{Rate of determining the super guarantee.}
+
+\item{drawDownMethod}{Method of draw down.}
+
+\item{minDrawDown6474, minDrawDown7579, minDrawDown8084, minDrawDown8589, minDrawDown9094, minDrawDown9599}{Minimum draw-down rates for the given ages.}
+
+\item{short_run_wage_growth}{Vector of rates of wage growth for the first five years.}
+
+\item{long_run_wage_growth, long_run_cpi_growth}{Rate of wage/cpi growth beyond five years.}
+
+\item{initial_super_balance}{Super balance in first year.}
+
+\item{apply_pretax_cap}{Should the pre-tax cap be applied?}
+
+\item{super_acct_fixed_fee}{The fixed fee for the person's super account.}
+
+\item{contributions_tax_rate}{Rate of contributions tax.}
+
+\item{asset_earnings_accumulation}{Rate of asset growth in the accumulation phase.}
+
+\item{earnings_tax_accumulation}{Rate of tax on earnings in the accumulation phase.}
+
+\item{asset_earnings_pension}{Rate of asset growth in the pension phase.}
+
+\item{earnings_tax_pension}{Rate of tax on earnings in the pension phase.}
+
+\item{div293_threshold}{Threshold for Division 293 phase.}
+
+\item{verbose}{Report progress and internal calculations yearly.}
 }
 \description{
 Replacement rate.

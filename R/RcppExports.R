@@ -21,15 +21,15 @@
 NULL
 
 pensionAge <- function(year) {
-    .Call('CRIMpp_pensionAge', PACKAGE = 'CRIMpp', year)
+    .Call('_CRIMpp_pensionAge', PACKAGE = 'CRIMpp', year)
 }
 
 AgePension <- function(assets, income, homeOwner, age, year, sinRaMax = 129.4, sinMaxRate = 788.4, sinAssHomeThr = 202000, sinAssNonHomeThr = 348500, pensAssTpr = 0.015, sinIncThr = 162, pensIncTpr = 0.50, sinSupTot = 14.1, sinSupMin = 14.1, sinCesMax = 14.1) {
-    .Call('CRIMpp_AgePension', PACKAGE = 'CRIMpp', assets, income, homeOwner, age, year, sinRaMax, sinMaxRate, sinAssHomeThr, sinAssNonHomeThr, pensAssTpr, sinIncThr, pensIncTpr, sinSupTot, sinSupMin, sinCesMax)
+    .Call('_CRIMpp_AgePension', PACKAGE = 'CRIMpp', assets, income, homeOwner, age, year, sinRaMax, sinMaxRate, sinAssHomeThr, sinAssNonHomeThr, pensAssTpr, sinIncThr, pensIncTpr, sinSupTot, sinSupMin, sinCesMax)
 }
 
 age_pension <- function(Assets, Income, HomeOwner, Age, Year) {
-    .Call('CRIMpp_age_pension', PACKAGE = 'CRIMpp', Assets, Income, HomeOwner, Age, Year)
+    .Call('_CRIMpp_age_pension', PACKAGE = 'CRIMpp', Assets, Income, HomeOwner, Age, Year)
 }
 
 #' @title Working Life Income
@@ -47,11 +47,11 @@ age_pension <- function(Assets, Income, HomeOwner, Age, Year) {
 #' @param starting_year The year to begin. Used for determining superannuation guarantee.
 #' @export AverageWorkingLifeIncome average_working_life_income
 AverageWorkingLifeIncome <- function(prop_of_AWOTE_start_year = 1, wage_method = "Constant prop AWOTE", deflator = "wage", scope = "entire", starting_age = 30L, retirement_age = 70L, AWOTE_in_starting_year = 78200.00, short_run_wage_growth = as.numeric( c(0.0225, 0.0250, 0.0275, 0.0325, 0.0350)), long_run_wage_growth = 0.0404, long_run_cpi_growth = 0.025, starting_year = 2016L, verbose = FALSE) {
-    .Call('CRIMpp_AverageWorkingLifeIncome', PACKAGE = 'CRIMpp', prop_of_AWOTE_start_year, wage_method, deflator, scope, starting_age, retirement_age, AWOTE_in_starting_year, short_run_wage_growth, long_run_wage_growth, long_run_cpi_growth, starting_year, verbose)
+    .Call('_CRIMpp_AverageWorkingLifeIncome', PACKAGE = 'CRIMpp', prop_of_AWOTE_start_year, wage_method, deflator, scope, starting_age, retirement_age, AWOTE_in_starting_year, short_run_wage_growth, long_run_wage_growth, long_run_cpi_growth, starting_year, verbose)
 }
 
 average_working_life_income <- function(prop_of_AWOTE_start_year = 1L, wage_method = "Constant prop AWOTE", deflator = "wage", scope = "entire", starting_age = 30L, retirement_age = 70L, AWOTE_in_starting_year = 78200.00, short_run_wage_growth = as.numeric( c(0.0225, 0.0250, 0.0275, 0.0325, 0.0350)), long_run_wage_growth = 0.0404, long_run_cpi_growth = 0.025, starting_year = 2016L, verbose = FALSE) {
-    .Call('CRIMpp_average_working_life_income', PACKAGE = 'CRIMpp', prop_of_AWOTE_start_year, wage_method, deflator, scope, starting_age, retirement_age, AWOTE_in_starting_year, short_run_wage_growth, long_run_wage_growth, long_run_cpi_growth, starting_year, verbose)
+    .Call('_CRIMpp_average_working_life_income', PACKAGE = 'CRIMpp', prop_of_AWOTE_start_year, wage_method, deflator, scope, starting_age, retirement_age, AWOTE_in_starting_year, short_run_wage_growth, long_run_wage_growth, long_run_cpi_growth, starting_year, verbose)
 }
 
 #' @title Balance after n real level payments
@@ -67,7 +67,7 @@ average_working_life_income <- function(prop_of_AWOTE_start_year = 1L, wage_meth
 NULL
 
 BalanceAfterRealLevelPayments <- function(nominal_payment, n, balance, r_earnings, cpi, inArrears) {
-    .Call('CRIMpp_BalanceAfterRealLevelPayments', PACKAGE = 'CRIMpp', nominal_payment, n, balance, r_earnings, cpi, inArrears)
+    .Call('_CRIMpp_BalanceAfterRealLevelPayments', PACKAGE = 'CRIMpp', nominal_payment, n, balance, r_earnings, cpi, inArrears)
 }
 
 #' @title Income tax
@@ -80,7 +80,7 @@ BalanceAfterRealLevelPayments <- function(nominal_payment, n, balance, r_earning
 NULL
 
 IncomeTax <- function(income, thresholds = as.numeric( c(0, 18200, 37000, 87000, 180000)), rates = as.numeric( c(0, 0.19, 0.325, 0.370, 0.450)), litoThr = 37000, litoMax = 445, litoTaper = 0.015, saptoThr = 32279, saptoMax = 2230, saptoTaper = 0.1250, medLevyRate = 0.02, medLevyThr = 20542, medLevyShade = 0.10, sapto_eligible = FALSE) {
-    .Call('CRIMpp_IncomeTax', PACKAGE = 'CRIMpp', income, thresholds, rates, litoThr, litoMax, litoTaper, saptoThr, saptoMax, saptoTaper, medLevyRate, medLevyThr, medLevyShade, sapto_eligible)
+    .Call('_CRIMpp_IncomeTax', PACKAGE = 'CRIMpp', income, thresholds, rates, litoThr, litoMax, litoTaper, saptoThr, saptoMax, saptoTaper, medLevyRate, medLevyThr, medLevyShade, sapto_eligible)
 }
 
 #' @title Real level of pension payments giving starting retirement conditions
@@ -95,15 +95,15 @@ IncomeTax <- function(income, thresholds = as.numeric( c(0, 18200, 37000, 87000,
 NULL
 
 RealPensionLevel <- function(n, balance, r_earnings, cpi, inArrears) {
-    .Call('CRIMpp_RealPensionLevel', PACKAGE = 'CRIMpp', n, balance, r_earnings, cpi, inArrears)
+    .Call('_CRIMpp_RealPensionLevel', PACKAGE = 'CRIMpp', n, balance, r_earnings, cpi, inArrears)
 }
 
 showOutputt <- function(z, x) {
-    invisible(.Call('CRIMpp_showOutputt', PACKAGE = 'CRIMpp', z, x))
+    invisible(.Call('_CRIMpp_showOutputt', PACKAGE = 'CRIMpp', z, x))
 }
 
 Listo <- function(adjusted_income, contributions, threshold, max_listo) {
-    .Call('CRIMpp_Listo', PACKAGE = 'CRIMpp', adjusted_income, contributions, threshold, max_listo)
+    .Call('_CRIMpp_Listo', PACKAGE = 'CRIMpp', adjusted_income, contributions, threshold, max_listo)
 }
 
 #' @title Replacement rate
@@ -112,10 +112,29 @@ Listo <- function(adjusted_income, contributions, threshold, max_listo) {
 #' @param starting_age (Default: 30) The age in the first year of the model. Integer.
 #' @param retirement_age (Default: 70) Retirement age for the model. Integer.
 #' @param wage_method Constant proportion of AWOTE.
-#' @param AWOTE_starting_year The AWOTE for the starting year.
+#' @param starting_salary The AWOTE for the starting year.
+#' @param homeowner Is the person a home-owner?
+#' @param house_value What is the value of the home owned by the person?
+#' @param death_age Age of death.
+#' @param start_fy_ending Year ending of the financial year at the start of the model.
+#' @param SG_rate_method Rate of determining the super guarantee.
+#' @param drawDownMethod Method of draw down.
+#' @param minDrawDown6474,minDrawDown7579,minDrawDown8084,minDrawDown8589,minDrawDown9094,minDrawDown9599 Minimum draw-down rates for the given ages.
+#' @param short_run_wage_growth Vector of rates of wage growth for the first five years.
+#' @param long_run_wage_growth,long_run_cpi_growth Rate of wage/cpi growth beyond five years.
+#' @param initial_super_balance Super balance in first year.
+#' @param apply_pretax_cap Should the pre-tax cap be applied?
+#' @param super_acct_fixed_fee The fixed fee for the person's super account.
+#' @param contributions_tax_rate Rate of contributions tax.
+#' @param asset_earnings_accumulation Rate of asset growth in the accumulation phase.
+#' @param earnings_tax_accumulation Rate of tax on earnings in the accumulation phase.
+#' @param asset_earnings_pension Rate of asset growth in the pension phase.
+#' @param earnings_tax_pension Rate of tax on earnings in the pension phase.
+#' @param div293_threshold Threshold for Division 293 phase.
+#' @param verbose Report progress and internal calculations yearly.
 #' @export ReplacementRate
 ReplacementRate <- function(starting_age = 30L, retirement_age = 70L, wage_method = "Constant prop AWOTE", starting_salary = 78200, homeowner = TRUE, house_value = 250000, death_age = 92L, start_fy_ending = 2016L, SG_rate_method = "Legislated", drawDownMethod = "Min draw down", minDrawDown6474 = as.numeric( c(0.040, 0.040, 0.040, 0.040, 0.040, 0.040, 0.040, 0.040, 0.040, 0.040)), minDrawDown7579 = as.numeric( c(0.050, 0.050, 0.050, 0.050, 0.050)), minDrawDown8084 = as.numeric( c(0.060, 0.060, 0.060, 0.060, 0.060)), minDrawDown8589 = as.numeric( c(0.070, 0.070, 0.070, 0.070, 0.070)), minDrawDown9094 = as.numeric( c(0.080, 0.080, 0.080, 0.080, 0.080)), minDrawDown9599 = as.numeric( c(0.110, 0.110, 0.110, 0.110, 0.110)), short_run_wage_growth = as.numeric( c(0.0225, 0.0250, 0.0275, 0.0325, 0.0350)), long_run_wage_growth = 0.0404, long_run_cpi_growth = 0.025, initial_super_balance = 0.0, apply_pretax_cap = FALSE, super_acct_fixed_fee = 320.0, contributions_tax_rate = 0.15, asset_earnings_accumulation = 0.0650, earnings_tax_accumulation = 0.15, asset_earnings_pension = 0.0550, earnings_tax_pension = 0.0, div293_threshold = 250000, verbose = FALSE) {
-    .Call('CRIMpp_ReplacementRate', PACKAGE = 'CRIMpp', starting_age, retirement_age, wage_method, starting_salary, homeowner, house_value, death_age, start_fy_ending, SG_rate_method, drawDownMethod, minDrawDown6474, minDrawDown7579, minDrawDown8084, minDrawDown8589, minDrawDown9094, minDrawDown9599, short_run_wage_growth, long_run_wage_growth, long_run_cpi_growth, initial_super_balance, apply_pretax_cap, super_acct_fixed_fee, contributions_tax_rate, asset_earnings_accumulation, earnings_tax_accumulation, asset_earnings_pension, earnings_tax_pension, div293_threshold, verbose)
+    .Call('_CRIMpp_ReplacementRate', PACKAGE = 'CRIMpp', starting_age, retirement_age, wage_method, starting_salary, homeowner, house_value, death_age, start_fy_ending, SG_rate_method, drawDownMethod, minDrawDown6474, minDrawDown7579, minDrawDown8084, minDrawDown8589, minDrawDown9094, minDrawDown9599, short_run_wage_growth, long_run_wage_growth, long_run_cpi_growth, initial_super_balance, apply_pretax_cap, super_acct_fixed_fee, contributions_tax_rate, asset_earnings_accumulation, earnings_tax_accumulation, asset_earnings_pension, earnings_tax_pension, div293_threshold, verbose)
 }
 
 #' @title Balance via Pachinko
@@ -130,7 +149,7 @@ ReplacementRate <- function(starting_age = 30L, retirement_age = 70L, wage_metho
 NULL
 
 SuperBalanceViaPachinko <- function(age, percentile, starting_year = 2016L, retirement_age = 70L, death_age = 92L, short_run_wage_index = as.numeric( c(0.0225, 0.0250, 0.0275, 0.0325, 0.0350)), long_run_wage_index = 0.0404, long_term_CPI = 0.0250, contribution_tax = 0.15, asset_earnings_accumulation = 0.0650, earnings_tax_accumulation = 0.15, asset_earnings_pension = 0.0550, earnings_tax_pension = 0.0, taxable_earnings = 0.53, super_account_fee_2015 = 320.0) {
-    .Call('CRIMpp_SuperBalanceViaPachinko', PACKAGE = 'CRIMpp', age, percentile, starting_year, retirement_age, death_age, short_run_wage_index, long_run_wage_index, long_term_CPI, contribution_tax, asset_earnings_accumulation, earnings_tax_accumulation, asset_earnings_pension, earnings_tax_pension, taxable_earnings, super_account_fee_2015)
+    .Call('_CRIMpp_SuperBalanceViaPachinko', PACKAGE = 'CRIMpp', age, percentile, starting_year, retirement_age, death_age, short_run_wage_index, long_run_wage_index, long_term_CPI, contribution_tax, asset_earnings_accumulation, earnings_tax_accumulation, asset_earnings_pension, earnings_tax_pension, taxable_earnings, super_account_fee_2015)
 }
 
 #' @title Average income in retirement
@@ -141,10 +160,10 @@ SuperBalanceViaPachinko <- function(age, percentile, starting_year = 2016L, reti
 NULL
 
 showOutput <- function(x) {
-    invisible(.Call('CRIMpp_showOutput', PACKAGE = 'CRIMpp', x))
+    invisible(.Call('_CRIMpp_showOutput', PACKAGE = 'CRIMpp', x))
 }
 
 SuperBalanceAtRetirement <- function(AWOTE_starting_year = 78200, start_balance = 0, deflator = "CPI", starting_age = 30L, starting_year = 2016L, retirement_age = 70L, death_age = 92L, short_run_wage_index = as.numeric( c(0.0225, 0.0250, 0.0275, 0.0325, 0.0350)), long_run_wage_index = 0.0404, long_term_CPI = 0.0250, contribution_tax = 0.15, asset_earnings_accumulation = 0.0650, earnings_tax_accumulation = 0.15, asset_earnings_pension = 0.0550, earnings_tax_pension = 0.0, taxable_earnings = 0.53, super_account_fee_2015 = 320.0) {
-    .Call('CRIMpp_SuperBalanceAtRetirement', PACKAGE = 'CRIMpp', AWOTE_starting_year, start_balance, deflator, starting_age, starting_year, retirement_age, death_age, short_run_wage_index, long_run_wage_index, long_term_CPI, contribution_tax, asset_earnings_accumulation, earnings_tax_accumulation, asset_earnings_pension, earnings_tax_pension, taxable_earnings, super_account_fee_2015)
+    .Call('_CRIMpp_SuperBalanceAtRetirement', PACKAGE = 'CRIMpp', AWOTE_starting_year, start_balance, deflator, starting_age, starting_year, retirement_age, death_age, short_run_wage_index, long_run_wage_index, long_term_CPI, contribution_tax, asset_earnings_accumulation, earnings_tax_accumulation, asset_earnings_pension, earnings_tax_pension, taxable_earnings, super_account_fee_2015)
 }
 
