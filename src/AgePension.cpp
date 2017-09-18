@@ -87,21 +87,7 @@ double AgePension (double assets,
   return out;
 }
 
-// [[Rcpp::export]]
-NumericVector age_pension(NumericVector Assets,
-                          NumericVector Income,
-                          LogicalVector HomeOwner,
-                          IntegerVector Age,
-                          IntegerVector Year) {
-  int n = Assets.length();
-  NumericVector out(n);
-  
-  for (int k = 0; k < n; ++k) {
-    out[k] = AgePension(Assets[k], Income[k], HomeOwner[k], Age[k], Year[k]);
-  }
-  return out;
-  
-}
+
 
 
 

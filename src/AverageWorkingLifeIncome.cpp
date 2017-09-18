@@ -14,18 +14,20 @@ using namespace Rcpp;
 //
 
 //' @title Working Life Income
+//' @description Working life income is an income.
 //' @name AverageWorkingLifeIncome
 //' @param prop_of_AWOTE_start_year The proportion of AWOTE of the subject in the \code{starting_year}.
 //' @param wage_method 'Constant prop AWOTE'.
+//' @param deflator What deflator should be used?
+//' @param scope Entire?
 //' @param starting_age The age at which the model begins. Set to 30 by default, rather than a younger age
 //'   to account for time out of the workforce.
-//' @param deflator What deflator should be used?
-//' @param Starting age.
-//' @param Retirement age.
+//' @param retirement_age Retirement age.
 //' @param AWOTE_in_starting_year The salary in starting year.
 //' @param short_run_wage_growth A vector of wage indices.
-//' @param long_run_wage_growth Rate of wage growth beyond short_run_wage_growth.
+//' @param long_run_wage_growth,long_run_cpi_growth Rate of wage/CPI growth beyond short_run_wage_growth.
 //' @param starting_year The year to begin. Used for determining superannuation guarantee.
+//' @param verbose Report intermediate calculations.
 //' @export AverageWorkingLifeIncome average_working_life_income
 // [[Rcpp::export]]
 double AverageWorkingLifeIncome (double prop_of_AWOTE_start_year = 1,
@@ -128,6 +130,8 @@ double AverageWorkingLifeIncome (double prop_of_AWOTE_start_year = 1,
   return out;
 }
 
+//' @rdname AverageWorkingLifeIncome
+//' @details \code{average_working_life_income} is a vectorized version of \code{AverageWorkingLifeIncome}.
 // [[Rcpp::export]]
 NumericVector average_working_life_income(NumericVector prop_of_AWOTE_start_year = 1,
                                           std::string wage_method = "Constant prop AWOTE",

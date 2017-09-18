@@ -2,9 +2,18 @@
 % Please edit documentation in R/RcppExports.R
 \name{AverageWorkingLifeIncome}
 \alias{AverageWorkingLifeIncome}
+\alias{average_working_life_income}
 \title{Working Life Income}
 \usage{
 AverageWorkingLifeIncome(prop_of_AWOTE_start_year = 1,
+  wage_method = "Constant prop AWOTE", deflator = "wage",
+  scope = "entire", starting_age = 30L, retirement_age = 70L,
+  AWOTE_in_starting_year = 78200,
+  short_run_wage_growth = as.numeric(c(0.0225, 0.025, 0.0275, 0.0325, 0.035)),
+  long_run_wage_growth = 0.0404, long_run_cpi_growth = 0.025,
+  starting_year = 2016L, verbose = FALSE)
+
+average_working_life_income(prop_of_AWOTE_start_year = 1L,
   wage_method = "Constant prop AWOTE", deflator = "wage",
   scope = "entire", starting_age = 30L, retirement_age = 70L,
   AWOTE_in_starting_year = 78200,
@@ -19,18 +28,26 @@ AverageWorkingLifeIncome(prop_of_AWOTE_start_year = 1,
 
 \item{deflator}{What deflator should be used?}
 
+\item{scope}{Entire?}
+
 \item{starting_age}{The age at which the model begins. Set to 30 by default, rather than a younger age
 to account for time out of the workforce.}
+
+\item{retirement_age}{Retirement age.}
 
 \item{AWOTE_in_starting_year}{The salary in starting year.}
 
 \item{short_run_wage_growth}{A vector of wage indices.}
 
-\item{long_run_wage_growth}{Rate of wage growth beyond short_run_wage_growth.}
+\item{long_run_wage_growth, long_run_cpi_growth}{Rate of wage/CPI growth beyond short_run_wage_growth.}
 
 \item{starting_year}{The year to begin. Used for determining superannuation guarantee.}
 
-\item{Starting}{age.}
-
-\item{Retirement}{age.}
+\item{verbose}{Report intermediate calculations.}
+}
+\description{
+Working life income is an income.
+}
+\details{
+\code{average_working_life_income} is a vectorized version of \code{AverageWorkingLifeIncome}.
 }

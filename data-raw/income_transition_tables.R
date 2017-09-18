@@ -1,6 +1,6 @@
-library(dtplyr)
-library(dplyr)
+library(magrittr)
 library(data.table)
+
 
 fread_mark_filename <- function(filename) {
   age <- as.integer(gsub("^.*([0-9]{2}).[0-9]{2}.*$", "\\1", filename))
