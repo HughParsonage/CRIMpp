@@ -357,6 +357,7 @@ double ReplacementRate(int starting_age = 30,
       closing_balance_eoy -= accumulation_phase_earnings_tax;
       
       if (verbose) {
+        showOutputt("Working-age income:\t", working_age_income);
         showOutputt("Inflow:\t", balance_inflow);
         showOutputt("Earnings:\t", accumulation_phase_earnings);
         showOutputt("Earnings tax:\t", accumulation_phase_earnings_tax);
@@ -398,7 +399,7 @@ double ReplacementRate(int starting_age = 30,
     
     double total_lifetime_retirement_income = 0;
     
-    while (alive) {
+    while (alive && j < 6) {
       j += 1;
       age += 1;
       year += 1;
@@ -456,6 +457,11 @@ double ReplacementRate(int starting_age = 30,
                                sinRaMax, penMaxRateS, penAssHOThrS,
                                penAssNonHOThrS, pensAssTpr,
                                pensIncTpr, penSupTotS);
+      age_pension *= 26.25;
+      
+      if (verbose) {
+        showOutputt("Age pension:\t", age_pension);
+      }
       
       total_retirement_income_nominal = age_pension + Assessable_income;
       
@@ -463,11 +469,12 @@ double ReplacementRate(int starting_age = 30,
       total_retirement_income_average += (total_retirement_income_real - total_retirement_income_average) / j;
       total_lifetime_retirement_income += total_retirement_income_real;
       if (verbose) {
-        showOutputt("Average Retirement income:\t", total_retirement_income_average);
+        showOutputt("Avg Ret. inc:\t", total_retirement_income_average);
       }
       
       closing_balance_eoy -= pension_phase_draw_down;
       closing_balance_eoy -= pension_phase_earnings_tax;
+      closing_balance_eoy *= (1 + earnings_rate);
       
       // at end:
       if (age >= death_age) {
@@ -482,6 +489,7 @@ double ReplacementRate(int starting_age = 30,
     }
     
     out = total_retirement_income_real / working_age_income;
+    
   }
   
   
@@ -489,11 +497,4 @@ double ReplacementRate(int starting_age = 30,
 }
 
 
-// You can include R code blocks in C++ files processed with sourceCpp
-// (useful for testing and development). The R code will be automatically 
-// run after the compilation.
-//
 
-/*** R
-# timesTwo(42)
-*/
