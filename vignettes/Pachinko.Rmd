@@ -1,0 +1,584 @@
+---
+title: "Vignette Title"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+# Set working directory to source file location
+# This script:
+#   - writes several transition tables to disk (through the source() line below)
+#   - creates objects 
+#     * machine_widget (every row is a simulation's instance of a person; the columns marked with .1 are the path that person took in that simulation)
+#     * lifetime_pachinko that outputs for every Percentile the average lifetime_AWOTE across all simulations
+# 1000 is pretty good (100,000 individuals)
+n_simulations <- 1000
+# tbl_dt [100 x 2]
+#    Percentile lifetime_AWOTE
+#         <int>          <dbl>
+# 1           1       13.50444
+# 2           2       14.17248
+# 3           3       14.56721
+# 4           4       15.00996
+# 5           5       15.38401
+# 6           6       15.93115
+# 7           7       16.49369
+# 8           8       16.91389
+# 9           9       17.61472
+# 10         10       17.99585
+# # ... with 90 more rows
+
+library(readr)
+library(ggplot2)
+library(scales)
+library(viridis)
+library(magrittr)
+library(mgcv)
+
+
+library(data.table)
+if (requireNamespace("hildaData", quietly = TRUE)) {
+  library(hildaData)
+} else {
+  stop("package:hildaData is a local package, containing the raw Combined_* .dta files as data.tables.\n",
+       "Either obtain this package from Hugh Parsonage or run", "\n", 
+       "\t", 
+       "Combined_n140c <- as.data.table(read.dta('path/to/your/Wave14/Combinedfile.dta'));", "\n",
+       "\t", 
+       "Combined_m130c <- as.data.table(read.dta('path/to/your/Wave13/Combinedfile.dta'));", "\n",
+       "\t", "...", "\n",
+       "etc.")
+}
+library(hildaExtra)
+library(grattan)
+```
+
+```{r}
+awote_by_year <-
+  data.table(Year = 2014:2001,
+             AWOTE = c(1477,
+                       1437,
+                       1396,
+                       1330.1,
+                       1275.2,
+                       1226.8,
+                       1158,
+                       1098.6,
+                       1044.1,
+                       1011.8,
+                       965,
+                       929.1,
+                       882.1,
+                       842.6)) %>%
+  .[, AWOTE_annual := 52.5 * AWOTE]
+
+get_hilda_xwaveid_age_income <- function(year){
+  wave <- letters[year - 2000]
+  if (exists("Combined_n150c", where = "package:hildaData")) {
+    NAME <- paste0("Combined_", wave, "150c")
+  } else {
+    if (year == 2014){
+      NAME <- "Combined_n140c"
+    } else {
+      NAME <- paste0("Combined_", wave, "130c")
+    }
+  }
+
+  get(NAME) %>%
+    as.data.table %>%
+    .[,.SD, 
+      .SDcols = c("xwaveid",
+                  paste0(wave, "tifefp"), # income
+                  paste0(wave, "hgage"),  # age
+                  paste0(wave, "esbrd"),  # employment-status
+                  paste0(wave, "wscmg")    # earnings from wage
+      )] %>%
+    setnames(paste0(wave, "tifefp"), "Income") %>%
+    setnames(paste0(wave, "hgage"), "Age") %>%
+    setnames(paste0(wave, "esbrd"), "Employment_status") %>%
+    setnames(paste0(wave, "wscmg"), "Weekly_salary_wage_from_main_job") %>%
+    .[, lapply(.SD, make_negatives_NA)] %>%
+    .[, Year := get("year", mode = "numeric")]
+}
+
+if (exists("Combined_n150c", where = "package:hildaData")) {
+  # alias
+  Combined_n140c <- Combined_n150c
+}
+
+xwaveid_by_lnwte <-
+  Combined_n140c %>%
+  as.data.table %>%
+  .[, .(xwaveid, WEIGHT = nlnwte)] %>%
+  .[WEIGHT > 0] %>%
+  setkey(xwaveid) %>%
+  unique(by = "xwaveid")
+
+income_age_by_xwaveid_year <-
+  lapply(2001:2014, get_hilda_xwaveid_age_income) %>%
+  rbindlist(use.names = TRUE) %>%
+  setkey(xwaveid) %>%
+  merge(xwaveid_by_lnwte) %>%
+  .[, Income_percentile = weighted_ntile(Income, WEIGHT, n = 100), keyby = "Year"] %>%
+  .[, Income_next_year = shift(Income, type = "lead"), by = "xwaveid"] %>%
+  .[, Income_percentile_next_year := shift(Income_percentile, type = "lead"), by = "xwaveid"] %>%
+  .[]
+
+prob_year_on_year <-
+  income_age_by_xwaveid_year %>%
+  mutate(DOB = Year - Age) %>%
+  filter(between(DOB, 2014 - 70, 2010 - 30),
+         Weekly_salary_wage_from_main_job > 38) %>%
+  mutate(Age_group = age_grouper(Age)) %>%
+  group_by(Age_group, Income_percentile, Income_percentile_next_year) %>%
+  summarise(n_persons = sum(WEIGHT)) %>%
+  ungroup %>%
+  group_by(Age_group, Income_percentile) %>%
+  mutate(prob = n_persons / sum(n_persons))
+
+Age_group_2005_by_xwaveid <-
+  income_age_by_xwaveid_year %>%
+  select(Year, xwaveid, Age) %>%
+  filter(Year == 2005) %>%
+  select(xwaveid, Age) %>%
+  setkey(Age) %>%
+  group_by(xwaveid) %>%
+  summarise(Age_group_2005 = age_grouper(Age, interval = 5)) %>%
+  setkey(xwaveid)
+
+## How much do we lose by restricting to only those present in at
+## least one year in 2005-2009 and 2010-2014
+income_age_by_xwaveid_year %>%
+  select(xwaveid, Year, WEIGHT) %>%
+  .[, .(in_both = any(Year <= 2009) & any(Year > 2009)), by = xwaveid] %$%
+  stopifnot(mean(in_both) > 0.6) ## weighted.mean trivially 1
+
+income_AWOTE_by_age_percentile <- 
+  income_age_by_xwaveid_year %>%
+  merge(awote_by_year, by = "Year", sort = FALSE) %>%
+  mutate(DOB = Year - Age) %>%
+  # Certain age, working each year.
+  filter(between(DOB, 2014 - 70, 2010 - 30),
+         # People aged 55-64 have volatile transitions between income percentiles
+         # So we exclude such people
+         Weekly_salary_wage_from_main_job > 100) %>%
+  filter(Employment_status == "[1] Employed") %>%
+  mutate(Income_per_AWOTE_annual = Income / AWOTE_annual) %>%
+  filter(Year >= 2005) %>%
+  setkey(xwaveid) %>%
+  filter(WEIGHT > 0) %>%
+  # Restrict to only those cohorts with at least one year
+  # in each ante-2009 and post-2009 group and at least 3years total
+  group_by(xwaveid) %>%
+  filter(any(Year <= 2009), any(Year > 2009), n() >= 3) %>%
+  ungroup %>%
+  group_by(xwaveid, First_year_range = Year <= 2009) %>%
+  summarise(AWOTE_annual_average = mean(Income_per_AWOTE_annual)) %>%
+  setkey(xwaveid) %>%
+  merge(xwaveid_by_lnwte) %>%
+  merge(Age_group_2005_by_xwaveid) %>%
+  group_by(Age_group_2005, First_year_range) %>%
+  mutate(AWOTE_annual_percentile = weighted_ntile(AWOTE_annual_average, weights = WEIGHT, n = 100)) %>%
+  mutate(Year_range = if_else(First_year_range, "Decile_ante_2009", "Decile_post_2009")) %>%
+  select(xwaveid, Age_group_2005, Year_range, AWOTE_annual_percentile, AWOTE_annual_average) %>%
+  setkey(xwaveid) %>%
+  merge(xwaveid_by_lnwte) %>%
+  group_by(Age_group_2005, Year_range, AWOTE_annual_percentile) %>%
+  summarise(n_persons = sum(WEIGHT), 
+            AWOTE_average = weighted.mean(AWOTE_annual_average, WEIGHT)) 
+
+income_AWOTE_by_age_percentile %>%
+  write_csv("income-AWOTE-by-age-percentile.csv")
+
+prob_5year_on_year <-
+  income_age_by_xwaveid_year %>%
+  merge(awote_by_year, by = "Year", sort = FALSE) %>%
+  mutate(DOB = Year - Age) %>%
+  # Certain age, working each year.
+  filter(between(DOB, 2014 - 70, 2010 - 30),
+         Weekly_salary_wage_from_main_job > 100) %>%
+  filter(Employment_status == "[1] Employed") %>%
+  mutate(Income_per_AWOTE_annual = Income / AWOTE_annual) %>%
+  filter(Year >= 2005) %>%
+  setkey(xwaveid) %>%
+  filter(WEIGHT > 0) %>%
+  # Restrict to only those cohorts with at least one year
+  # in each ante-2009 and post-2009 group and at least 3years total
+  group_by(xwaveid) %>%
+  filter(any(Year <= 2009), any(Year > 2009), n() >= 3) %>%
+  ungroup %>%
+  group_by(xwaveid, First_year_range = Year <= 2009) %>%
+  summarise(AWOTE_annual_average = mean(Income_per_AWOTE_annual)) %>%
+  setkey(xwaveid) %>%
+  merge(xwaveid_by_lnwte) %>%
+  merge(Age_group_2005_by_xwaveid) %>%
+  group_by(Age_group_2005, First_year_range) %>%
+  mutate(AWOTE_annual_decile = weighted_ntile(AWOTE_annual_average, weights = WEIGHT, n = 10)) %>%
+  mutate(Year_range = if_else(First_year_range, "Decile_ante_2009", "Decile_post_2009")) %>%
+  select(xwaveid, Age_group_2005, Year_range, AWOTE_annual_decile) %>%
+  dcast.data.table(xwaveid + Age_group_2005 ~  Year_range, value.var = "AWOTE_annual_decile") %>%
+  setkey(xwaveid) %>%
+  merge(xwaveid_by_lnwte) %>%
+  group_by(Age_group_2005, Decile_ante_2009, Decile_post_2009) %>%
+  summarise(n_persons = sum(WEIGHT)) %>%
+  ungroup %>%
+  group_by(Age_group_2005, Decile_ante_2009) %>%
+  mutate(prob = n_persons / sum(n_persons)) %>%
+  arrange(Age_group_2005, Decile_ante_2009) 
+
+prob_5year_on_year_percentile <-
+  income_age_by_xwaveid_year %>%
+  merge(awote_by_year, by = "Year", sort = FALSE) %>%
+  mutate(DOB = Year - Age) %>%
+  # Certain age, working each year.
+  filter(between(DOB, 2014 - 70, 2010 - 30),
+         Weekly_salary_wage_from_main_job > 100) %>%
+  filter(Employment_status == "[1] Employed") %>%
+  mutate(Income_per_AWOTE_annual = Income / AWOTE_annual) %>%
+  filter(Year >= 2005) %>%
+  setkey(xwaveid) %>%
+  filter(WEIGHT > 0) %>%
+  # Restrict to only those cohorts with at least one year
+  # in each ante-2009 and post-2009 group and at least 3years total
+  group_by(xwaveid) %>%
+  filter(any(Year <= 2009), any(Year > 2009), n() >= 3, sum(Year > 2009) > 2) %>%
+  ungroup %>%
+  group_by(xwaveid, First_year_range = Year <= 2009) %>%
+  summarise(AWOTE_annual_average = mean(Income_per_AWOTE_annual)) %>%
+  setkey(xwaveid) %>%
+  merge(xwaveid_by_lnwte) %>%
+  merge(Age_group_2005_by_xwaveid) %>%
+  group_by(Age_group_2005, First_year_range) %>%
+  mutate(AWOTE_annual_decile = weighted_ntile(AWOTE_annual_average, weights = WEIGHT, n = 100)) %>%
+  mutate(Year_range = if_else(First_year_range, "Decile_ante_2009", "Decile_post_2009")) %>%
+  select(xwaveid, Age_group_2005, Year_range, AWOTE_annual_decile) %>%
+  dcast.data.table(xwaveid + Age_group_2005 ~  Year_range, value.var = "AWOTE_annual_decile") %>%
+  setkey(xwaveid) %>%
+  merge(xwaveid_by_lnwte) %>%
+  group_by(Age_group_2005, Decile_ante_2009, Decile_post_2009) %>%
+  summarise(n_persons = sum(WEIGHT)) %>%
+  ungroup %>%
+  group_by(Age_group_2005, Decile_ante_2009) %>%
+  mutate(prob = n_persons / sum(n_persons)) %>%
+  arrange(Age_group_2005, Decile_ante_2009)
+
+prob_5year_decile_w_9599 <- 
+  prob_5year_on_year_percentile %>%
+  # mutate(Percentile_post_2009 = if_else(Decile_post_2009 >= 98, 99, 
+  #                                       if_else(between(Decile_post_2009, 92, 98), 95,
+  #                                               round(Decile_post_2009, -1))), 
+  #        Percentile_pre_2009 = if_else(Decile_ante_2009 >= 98, 99, 
+  #                                      if_else(between(Decile_ante_2009, 92, 98), 95,
+  #                                              round(Decile_ante_2009, -1)))) %>%
+  
+  select(Age_group_2005, Percentile_pre_2009 = Decile_ante_2009, Percentile_post_2009 = Decile_post_2009, n_persons, prob) %>%
+  group_by(Age_group_2005, Percentile_pre_2009, Percentile_post_2009) %>%
+  summarise(n_persons = sum(n_persons)) %>%
+  group_by(Age_group_2005, Percentile_pre_2009) %>%
+  mutate(prob = n_persons / sum(n_persons)) %>%
+  ungroup %>%
+  arrange(Age_group_2005, Percentile_pre_2009)
+
+prob_5year_decile_w_9599 %>%
+  group_by(Percentile_pre_2009, Percentile_post_2009) %>%
+  summarise(prob = weighted.mean(prob, n_persons))
+
+# dir.create("age-transition-matrices")
+prob_5year_decile_w_9599 <- 
+  prob_5year_decile_w_9599 %>%
+  # Following to ensure all percentiles are filled
+  mutate(Percentile_pre_2009 = factor(Percentile_pre_2009), 
+         Percentile_post_2009 = factor(Percentile_post_2009))
+
+nan_to_zero <- function(x) {
+  if (is.numeric(x)){
+    x[is.nan(x)] <- 0
+  }
+  x
+}
+
+write_transition_matrix <- function(age){
+  prob_5year_decile_w_9599 %>%
+    filter(Age_group_2005 == age) %>%
+    dcast.data.table(Percentile_pre_2009 ~ Percentile_post_2009, fun = mean, drop = FALSE, fill = NaN, value.var = "prob") %>%
+    mutate_all(funs(nan_to_zero)) %>%
+    write_csv(paste0("age-transition-matrices/", age, "-transition-matrix.csv"))
+}
+
+lapply(unique(prob_5year_decile_w_9599$Age_group_2005), write_transition_matrix)
+matrix_2529 <- as.matrix.data.frame(read.csv("age-transition-matrices/25-29-transition-matrix.csv"))[,-1]
+matrix_3034 <- as.matrix.data.frame(read.csv("age-transition-matrices/30-34-transition-matrix.csv"))[,-1]
+matrix_3539 <- as.matrix.data.frame(read.csv("age-transition-matrices/35-39-transition-matrix.csv"))[,-1]
+matrix_4044 <- as.matrix.data.frame(read.csv("age-transition-matrices/40-44-transition-matrix.csv"))[,-1]
+matrix_4549 <- as.matrix.data.frame(read.csv("age-transition-matrices/45-49-transition-matrix.csv"))[,-1]
+matrix_5054 <- as.matrix.data.frame(read.csv("age-transition-matrices/50-54-transition-matrix.csv"))[,-1]
+matrix_5559 <- as.matrix.data.frame(read.csv("age-transition-matrices/55-59-transition-matrix.csv"))[,-1]
+matrix_6064 <- as.matrix.data.frame(read.csv("age-transition-matrices/60-64-transition-matrix.csv"))[,-1]
+
+# {matrix_2529 %*%
+#     matrix_3034 %*%
+#     matrix_3539 %*%
+#     matrix_4044 %*%
+#     matrix_4549 %*%
+#     matrix_5054 %*%
+#     matrix_5559 %*%
+#     matrix_6064} %>%
+#   as.data.table %>%
+#   fwrite("transition-matrix-25-60-ages.csv")
+
+{out <- matrix_2529 +
+    matrix_3034 +
+    matrix_3539 +
+    matrix_4044 +
+    matrix_4549 +
+    matrix_5054 +
+    matrix_5559 
+    # matrix_6064
+  out / rowSums(out)
+  } %>%
+  as.data.table %>%
+  write_csv("transition-matrix-average-all-ages.csv")
+
+prob_5year_decile_w_9599 %>%
+  group_by(Percentile_pre_2009, Percentile_post_2009) %>%
+  summarise(prob = weighted.mean(prob, n_persons)) %>%
+  dcast.data.table(Percentile_pre_2009 ~ Percentile_post_2009, fun = mean, value.var = "prob") %>%
+  write_csv("transition-matrix-all-ages.csv")
+
+
+
+
+
+
+
+
+
+
+get_transition_table <- function(filename){
+  age.range <- gsub("^.*([0-9]{2}.[0-9]{2}).transition.matrix\\.csv$", "\\1", filename)
+  
+  fread(filename, header = TRUE) %>%
+    melt.data.table(id.vars = "Percentile_pre_2009", variable.name = "Percentile_post_2009", value.name = "prob") %>%
+    arrange(Percentile_pre_2009) %>%
+    group_by(Percentile_pre_2009) %>%
+    mutate(cumprob = order_by(Percentile_post_2009, cumsum(prob))) %>%
+    setkey(Percentile_pre_2009, cumprob) %>%
+    mutate(age_range = age.range)
+}
+
+transition_tables_all <- 
+  lapply(list.files(path = "../income-model-through-hilda/age-transition-matrices/", 
+                    pattern = "^([0-9]{2}.[0-9]{2}).transition.matrix\\.csv$", 
+                    full.names = TRUE), 
+         get_transition_table) %>%
+  rbindlist(use.names = TRUE)
+
+# Make Percentile_post_2009 an integer, rather than a factor
+# 2L is the column number of Percentile_post_2009
+set(transition_tables_all, j = 2L, value = as.integer(transition_tables_all[[2L]]))
+
+smooth_matrix <- function(age_range){
+  filtrate <- data.table(age_range = age_range)
+  gam.1 <- 
+    transition_tables_all %>%
+    merge(filtrate, by = "age_range") %>%
+    mutate(Percentile_post_2009 = as.integer(Percentile_post_2009), 
+           Percentile_pre_2009 = as.integer(Percentile_pre_2009)) %>%
+    # k = 10 for less smooth data
+    gam(prob ~ te(Percentile_pre_2009, Percentile_post_2009, k = c(10, 10)), data = .)
+  out <- matrix(pmax(fitted(gam.1), 0), ncol = 100)
+  out / rowSums(out)
+}
+
+smooth_table <- function(age_range){
+  filtrate <- data.table(age_range = age_range)
+  gam.1 <- 
+    transition_tables_all %>%
+    # SE filter
+    merge(filtrate, by = "age_range") %>%
+    # k = 10 for less smooth data, somewhat computationally intensive
+    # This is a tensor product smooth.
+    gam(prob ~ te(Percentile_pre_2009, Percentile_post_2009, k = c(10, 10)), data = .)
+  
+  CJ(Percentile_pre_2009 = 1:100, 
+     Percentile_post_2009 = 1:100) %>%
+    # gam will predict some values as (very slightly) negative. 
+    # We need to normalize them anyhow, so just force nonnegative.
+    mutate(prob = pmax(predict(gam.1, newdata = .), 0)) %>%
+    # Following two lines are same as:
+    # group_by(Percentile_pre_2009) %>%
+    # mutate(prob = prob / sum(prob), 
+    #        cumprob = cumsum(lag(prob, default = 0))) %>%
+    # just faster.
+    .[, prob := prob / sum(prob), by = Percentile_pre_2009] %>%
+    .[, cumprob := cumsum(shift(prob, n = 1, type =  "lag", fill = 0)), by = Percentile_pre_2009] %>%
+    select(Percentile_ante = Percentile_pre_2009, Percentile_post = Percentile_post_2009, cumprob) %>%
+    setkey(Percentile_ante, cumprob)
+}
+
+stopifnot(n_simulations >= 1)
+randz <- runif(100*n_simulations)
+randz2 <- randz
+
+input <- 
+  CJ(Percentile_ante = 1:100, 
+     simulation = 1:n_simulations) %>%
+  mutate(cumprob = randz 
+         # Uncomment if you want to verify the rolling join
+         #,copycumprob = randz2
+         ) %>%
+  setkey(Percentile_ante, cumprob)
+
+setkey(input, Percentile_ante, cumprob)
+
+copy_column <- function(.data, new_name, column_copied){
+  .data2 <- copy(.data)
+  .data2[[new_name]] <- .data[[column_copied]]
+  as.data.table(.data2)
+}
+
+age_the_simulation <- function(input.table, five_year_group = 2){
+  age_range_fm <- c("25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64")[five_year_group - 1]
+  agerangefm <- sub("-", "", age_range_fm, fixed = TRUE)
+  age_range_to <- c("25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64")[five_year_group]
+  agerangeto <- sub("-", "", age_range_to, fixed = TRUE)
+  input.table %>%
+    smooth_table(age_range_to)[., roll=Inf] %>%
+    setnames("Percentile_post", paste0("Percentile_", agerangeto)) %>%
+    setnames("Percentile_ante", paste0("Percentile_", agerangefm)) %>%
+    copy_column("Percentile_ante", paste0("Percentile_", agerangefm)) %>%
+    # re roll the die
+    mutate(cumprob = runif(.N)) %>%
+    setkey(Percentile_ante, cumprob)
+}
+
+
+machine_widget <- 
+  input %>%
+  setkey(Percentile_ante, cumprob) %>%
+  age_the_simulation(2) %>% 
+  age_the_simulation(3) %>%
+  age_the_simulation(4) %>%
+  age_the_simulation(5) %>%
+  age_the_simulation(6) %>%
+  age_the_simulation(7) %>%
+  age_the_simulation(8) %>%
+  .[]
+
+awote_by_age <- 
+  income_AWOTE_by_age_percentile %>%
+  ungroup %>%
+  filter(Year_range == "Decile_post_2009") %>%
+  select(Age = Age_group_2005, Percentile = AWOTE_annual_percentile, AWOTE_average) %>%
+  setkey(Age, Percentile)  %>%
+  # Ensure all percentiles are available
+  # (Otherwise the benchmark might be non-monotonic.)
+  {
+    dot <- . 
+    gridExpanded <- CJ(Age = unique(dot$Age), 
+                       Percentile = 1:100)
+    
+    setkey(gridExpanded, Age, Percentile) 
+    
+    dot[gridExpanded] %>%
+      group_by(Age) %>%
+      mutate(AWOTE_average = if_else(is.na(AWOTE_average) & Percentile %in% c(1, 100), 
+                                     if_else(Percentile == 100,
+                                             max(AWOTE_average, na.rm = TRUE), 
+                                             0),
+                                     AWOTE_average)) %>%
+      mutate(AWOTE_average = na.approx(AWOTE_average, na.rm = FALSE)) %>%
+      ungroup
+    
+  } 
+
+stopifnot(nrow(awote_by_age) == 800L)
+
+lifetime_income_benchmark <-
+  awote_by_age %>% 
+  setkey(Age, Percentile) %>%
+  group_by(Percentile) %>% 
+  summarise(lifetime_AWOTE = sum(AWOTE_average) * 5)
+
+lifetime_pachinko_density <- 
+  machine_widget %>%
+  select(simulation, Percentile_2529, contains(".1"), Percentile_6064) %>%
+  setnames(old = grep(".1$", names(.), value = TRUE), 
+           new = gsub(".1$", "", names(.)[grep(".1$", names(.), value = FALSE)])) %>%
+  mutate(id = 1:.N) %>%
+  melt.data.table(id.vars = c("id", "simulation"), variable.name = "Age", value.name = "Percentile") %>%
+  mutate(Age = gsub("Percentile_(..)(..)", "\\1-\\2", Age)) %>%
+  setkeyv(c("Age", "Percentile")) %>%
+  merge(awote_by_age)
+
+
+lifetime_income_pachinko <- 
+  lifetime_pachinko_density %>% 
+  group_by(id) %>% 
+  summarise(lifetime_AWOTE = sum(AWOTE_average) * 5, 
+            Percentile = first(Percentile)) %>% 
+  group_by(Percentile) %>% 
+  summarise(lifetime_AWOTE = mean(lifetime_AWOTE))
+
+merge(lifetime_income_benchmark, lifetime_income_pachinko, by = "Percentile") %$%
+  t.test(lifetime_AWOTE.x, lifetime_AWOTE.y)
+
+bind_rows("benchmark" = lifetime_income_benchmark, 
+          "pachinko"  = lifetime_income_pachinko, .id = "group") %>%
+  ggplot(aes(x = Percentile, y = lifetime_AWOTE, group = group, color = group)) + 
+  geom_line()
+
+if (FALSE){
+# Cutting room floor
+
+# https://stat.ethz.ch/pipermail/r-help/2006-June/107405.html
+kde2d.weighted <- function (x, y, w, h, n = 25, lims = c(range(x), range(y))) {
+  nx <- length(x)
+  if (length(y) != nx) 
+    stop("data vectors must be the same length")
+  if (length(w) != nx & length(w) != 1)
+    stop("weight vectors must be 1 or length of data")
+  gx <- seq(lims[1], lims[2], length = n) # gridpoints x
+  gy <- seq(lims[3], lims[4], length = n) # gridpoints y
+  if (missing(h)) 
+    h <- c(bandwidth.nrd(x), bandwidth.nrd(y));
+  if (missing(w)) 
+    w <- numeric(nx)+1;
+  h <- h/4
+  ax <- outer(gx, x, "-")/h[1] # distance of each point to each grid point in x-direction
+  ay <- outer(gy, y, "-")/h[2] # distance of each point to each grid point in y-direction
+  z <- (matrix(rep(w,n), nrow=n, ncol=nx, byrow=TRUE)*matrix(dnorm(ax), n, nx)) %*% t(matrix(dnorm(ay), n, nx))/(sum(w) * h[1] * h[2]) # z is the density
+  return(list(x = gx, y = gy, z = z))
+}
+
+transition_table_30_to_35 %>% 
+  filter(prob > 0) %>%
+  ggplot(aes(x = as.integer(Percentile_post_2009), y = as.integer(Percentile_pre_2009), weight = prob)) + 
+  geom_point(aes(alpha = prob)) +
+  stat_density_2d(h = c(10, 10))
+
+kde_2d <- 
+  transition_table_30_to_35 %>% 
+  filter(prob > 0) %$%
+  kde2d.weighted(as.integer(Percentile_post_2009), as.integer(Percentile_pre_2009), w = prob, h = c(10, 10)) %>%
+  as.data.frame 
+
+  # readr::write_csv(as.data.table(smooth_transition_30_to_35), "transition-30-35-kde2d.csv")
+}
+
+
+```
+
+
