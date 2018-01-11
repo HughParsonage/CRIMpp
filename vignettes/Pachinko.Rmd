@@ -1,10 +1,10 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Life as a Pachinko machine: modelling lifetime income using HILDA data"
+author: "Hugh Parsonage"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: rmarkdown::html_document
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Pachinko machine}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -12,6 +12,9 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  width = 100,
+  fig.width = 10,
+  fig.height = 10,
   comment = "#>"
 )
 ```
@@ -118,7 +121,9 @@ if (exists("Combined_n150c", where = "package:hildaData")) {
   # alias
   Combined_n140c <- as.data.table(Combined_n150c)
 }
+```
 
+```{r xwaveid_by_lnwte}
 xwaveid_by_lnwte <-
   Combined_n140c %>%
   as.data.table %>%
@@ -126,7 +131,9 @@ xwaveid_by_lnwte <-
   .[WEIGHT > 0] %>%
   setkey(xwaveid) %>%
   unique(by = "xwaveid")
+```
 
+```{r income_age_by_xwaveid_year}
 income_age_by_xwaveid_year <-
   lapply(2001:2014, get_hilda_xwaveid_age_income) %>%
   rbindlist(use.names = TRUE) %>%
@@ -137,7 +144,9 @@ income_age_by_xwaveid_year <-
   .[, Income_percentile_next_year := shift(Income_percentile, type = "lead"), by = "xwaveid"] %>%
   .[, DOB := Year - Age] %>%
   .[]
+```
 
+```{r prob_year_on_year}
 prob_year_on_year <-
   income_age_by_xwaveid_year %>%
   .[between(DOB, 2014L - 70L, 2010L - 30L)] %>%
@@ -519,6 +528,21 @@ rbindlist(list("benchmark" = lifetime_income_benchmark,
           id = "group") %>%
   ggplot(aes(x = Percentile, y = lifetime_AWOTE, group = group, color = group)) + 
   geom_line()
+```
+
+```{r lifetrime-percentiels-for-initial-95percentile}
+machine_widget[Percentile_2529 %between% c(94, 95), .SD, .SDcols = grep("^((Percentile_[0-9]{4}\\.1)|(.*6064))$",
+                                                                        names(machine_widget)), key = "simulation"] %>%
+  melt.data.table(id.vars = "simulation") %>%
+  .[, variable := sub("^Percentile_(..)(..).*$", "\\1-\\2", variable)] %>%
+  .[, variable := factor(variable, levels = rev(unique(.$variable)), ordered = TRUE)] %>%
+  ggplot(aes(x = value, fill = variable)) +
+  geom_bar(width = 1,
+           color = grey(level = 0.75),
+           aes(y = ..prop..)) +
+  facet_wrap( ~ variable, scales = "free_y", ncol = 1) +
+  theme_dark()  +
+  scale_y_continuous(labels = percent)
 ```
 
 
