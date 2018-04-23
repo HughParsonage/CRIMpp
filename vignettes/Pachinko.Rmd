@@ -690,7 +690,7 @@ rbindlist(list("benchmark" = lifetime_income_benchmark,
 ```
 
 ```{r lifetime-percentiels-for-initial-95percentile, fig.height=13}
-for (the_percentile in c(25, 50, 95)) {
+for (the_percentile in c(10, 25, 50, 95)) {
   the_percentile_plot <- 
     machine_widget[Percentile_2529 %in% the_percentile,
                    .SD,
