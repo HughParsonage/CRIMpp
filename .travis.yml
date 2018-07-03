@@ -6,3 +6,6 @@ cache: packages
 
 r_packages:
 - tidyverse
+
+r_github_packages:
+- hughparsonage/grattanCharts
