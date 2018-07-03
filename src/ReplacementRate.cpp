@@ -421,6 +421,11 @@ double ReplacementRate(int starting_age = 30,
       Assessable_income = pension_phase_draw_down;
       Assessable_assets = closing_balance_eoy + non_super_assets;
       
+      if (verbose) {
+        showOutputt("Ass. Inc:\t", Assessable_income);
+        showOutputt("Ass. Ass:\t", Assessable_assets);
+      }
+      
       // Age pension
       sinRaMax *= (1 + long_run_cpi_growth);
       penMaxRateS *= (1 + long_run_cpi_growth);

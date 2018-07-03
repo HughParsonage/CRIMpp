@@ -15,6 +15,7 @@ Imports:
     data.table,
     magrittr
 LinkingTo: Rcpp
+Remotes: hughparsonage/grattanCharts
 Suggests:
     testthat,
     knitr,
