@@ -19,6 +19,7 @@ Remotes: hughparsonage/grattanCharts
 Suggests:
     testthat,
     knitr,
+    viridis,
     rmarkdown
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
