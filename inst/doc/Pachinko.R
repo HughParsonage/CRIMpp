@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 ## ------------------------------------------------------------------------
 # 1000 is pretty good (100,000 individuals)
-N_SIMULATIONS <- 10000
+N_SIMULATIONS <- 1000
 OLDEST.AGE <- 70L
 YOUNGEST.AGE <- 30L
 # tbl_dt [100 x 2]
@@ -53,8 +53,10 @@ library(mgcv)
 
 
 library(data.table)
-if (requireNamespace("hildaData", quietly = TRUE)) {
+if (requireNamespace("hildaData", quietly = TRUE) &&
+    requireNamespace("hildaData2016", quietly = TRUE)) {
   library(hildaData)
+  library(hildaData2016)
 } else {
   stop("package:hildaData is a local package, containing the raw Combined_* .dta files as data.tables.\n",
        "Either obtain this package from Hugh Parsonage or run", "\n",
@@ -70,8 +72,11 @@ library(grattan)
 
 ## ------------------------------------------------------------------------
 awote_by_year <-
-  data.table(Year = 2014:2001,
-             AWOTE = c(1477,
+  data.table(Year = 2017:2001,
+             AWOTE = c(1568,
+                       1532,
+                       1499,
+                       1477,
                        1437,
                        1396,
                        1330.1,
@@ -89,7 +94,9 @@ awote_by_year <-
 
 get_hilda_xwaveid_age_income <- function(year){
   wave <- letters[year - 2000]
-  if (exists("Combined_n150c", where = "package:hildaData")) {
+  if (year == 2016L) {
+    NAME <- "Combined_p160c"
+  } else if (exists("Combined_n150c", where = "package:hildaData")) {
     NAME <- paste0("Combined_", wave, "150c")
   } else {
     if (year == 2014){
@@ -132,7 +139,7 @@ xwaveid_by_lnwte <-
 
 ## ----income_age_by_xwaveid_year------------------------------------------
 income_age_by_xwaveid_year <-
-  lapply(2001:2014, get_hilda_xwaveid_age_income) %>%
+  lapply(2001:2016, get_hilda_xwaveid_age_income) %>%
   rbindlist(use.names = TRUE) %>%
   setkey(xwaveid) %>%
   .[xwaveid_by_lnwte, on = "xwaveid"] %>%
@@ -502,18 +509,35 @@ age_the_simulation <- function(input.table, five_year_group = 2){
 
 
 ## ----machine_widget------------------------------------------------------
-machine_widget <-
-  input %>%
-  setkey(Percentile_ante, cumprob) %>%
-  age_the_simulation(2) %>%
-  age_the_simulation(3) %>%
-  age_the_simulation(4) %>%
-  age_the_simulation(5) %>%
-  age_the_simulation(6) %>%
-  age_the_simulation(7) %>%
-  age_the_simulation(8) %>%
-  .[]
-
+machine_widget <- 
+  if (YOUNGEST.AGE == 30) {
+    input %>%
+      setkey(Percentile_ante, cumprob) %>%
+      age_the_simulation(2) %>%
+      age_the_simulation(3) %>%
+      age_the_simulation(4) %>%
+      age_the_simulation(5) %>%
+      age_the_simulation(6) %>%
+      age_the_simulation(7) %>%
+      age_the_simulation(8) %>%
+      .[]
+  } else if (YOUNGEST.AGE == 40) {
+    input %>%
+      setkey(Percentile_ante, cumprob) %>%
+      age_the_simulation(4) %>%
+      age_the_simulation(5) %>%
+      age_the_simulation(6) %>%
+      age_the_simulation(7) %>%
+      age_the_simulation(8) %>%
+      .[]
+  } else if (YOUNGEST.AGE == 50) {
+    input %>%
+      setkey(Percentile_ante, cumprob) %>%
+      age_the_simulation(6) %>%
+      age_the_simulation(7) %>%
+      age_the_simulation(8) %>%
+      .[]
+  }
 
 ## ----awote_by_age--------------------------------------------------------
 awote_by_age <-
@@ -540,7 +564,7 @@ awote_by_age <-
       .[, AWOTE_average := zoo::na.approx(AWOTE_average, na.rm = FALSE), keyby = "Age"]
   }
 
-stopifnot(nrow(awote_by_age) == 800L)
+stopifnot(nrow(awote_by_age) == 100 * (OLDEST.AGE %/% 5 - YOUNGEST.AGE %/% 5))
 
 
 ## ----lifetime_income_benchmark-------------------------------------------
@@ -554,7 +578,16 @@ lifetime_income_benchmark <-
 ## ----lifetime_pachinko_density-------------------------------------------
 lifetime_pachinko_density <-
   machine_widget %>%
-  .[, .SD, .SDcols = c("simulation", "Percentile_2529", grep(".1", names(.), value = TRUE), "Percentile_6064")] %>%
+  .[, .SD, .SDcols = c("simulation", 
+                       switch(as.character(YOUNGEST.AGE),
+                              "30" = "Percentile_2529",
+                              "40" = "Percentile_3539",
+                              "50" = "Percentile_4549",
+                              stop("Unanticipated YOUNGEST.AGE")),
+                       grep(".1", names(.), value = TRUE),
+                       switch(as.character(OLDEST.AGE),
+                              "70" = "Percentile_6064", 
+                              stop("Unanticipated OLDEST.AGE")))] %>%
   setnames(old = grep(".1$", names(.), value = TRUE),
            new = gsub(".1$", "", names(.)[grep(".1$", names(.), value = FALSE)])) %>%
   .[, id := .I] %>%
@@ -571,7 +604,10 @@ lifetime_income_pachinko <-
                             .(lifetime_AWOTE = sum(AWOTE_average) * 5,
                               Percentile = first(Percentile)),
                             keyby = "id"] %>%
-  .[, .(lifetime_AWOTE = mean(lifetime_AWOTE)), keyby = "Percentile"]
+  .[, .(lifetime_AWOTE = mean(lifetime_AWOTE)), keyby = "Percentile"] %>%
+  .[, lifetime_AWOTE := round(lifetime_AWOTE, 1)] %T>%
+  fwrite(sprintf("../inst/extdata/lifetime_income_pachinko-Age%s.csv", YOUNGEST.AGE)) %>%
+  .[]
 
 ## ----t-test--------------------------------------------------------------
 merge(lifetime_income_benchmark, lifetime_income_pachinko, by = "Percentile") %$%
@@ -592,12 +628,29 @@ rbindlist(list("benchmark" = lifetime_income_benchmark,
 
 ## ----lifetime-percentiels-for-initial-95percentile, fig.height=13--------
 for (the_percentile in c(10, 25, 50, 95)) {
-  the_percentile_plot <- 
-    machine_widget[Percentile_2529 %in% the_percentile,
-                   .SD,
-                   .SDcols = grep("^((Percentile_[0-9]{4}\\.1)|(.*(6064|2529)))$",
-                                  names(machine_widget)),
-                   key = "simulation"] %>%
+  the_percentile_plot <-
+    switch(as.character(YOUNGEST.AGE), 
+           "30" = {
+             machine_widget[Percentile_2529 %in% the_percentile,
+                            .SD,
+                            .SDcols = grep("^((Percentile_[0-9]{4}\\.1)|(.*(6064|2529)))$",
+                                           names(machine_widget)),
+                            key = "simulation"]
+           },
+           "40" = {
+             machine_widget[Percentile_3539 %in% the_percentile,
+                            .SD,
+                            .SDcols = grep("^((Percentile_[0-9]{4}\\.1)|(.*(6064|3539)))$",
+                                           names(machine_widget)),
+                            key = "simulation"]
+           },
+           "50" = {
+             machine_widget[Percentile_4549 %in% the_percentile,
+                            .SD,
+                            .SDcols = grep("^((Percentile_[0-9]{4}\\.1)|(.*(6064|4549)))$",
+                                           names(machine_widget)),
+                            key = "simulation"]
+           }) %>%
     melt.data.table(id.vars = "simulation") %>%
     .[, variable := sub("^Percentile_(..)(..).*$", "\\1-\\2", variable)] %>%
     .[order(-variable)] %>%

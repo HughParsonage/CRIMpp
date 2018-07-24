@@ -49,7 +49,7 @@ These are the global variables. That is, only consider HILDA individuals aged be
 # 1000 is pretty good (100,000 individuals)
 N_SIMULATIONS <- 1000
 OLDEST.AGE <- 70L
-YOUNGEST.AGE <- 50L
+YOUNGEST.AGE <- 30L
 # tbl_dt [100 x 2]
 #    Percentile lifetime_AWOTE
 #         <int>          <dbl>
