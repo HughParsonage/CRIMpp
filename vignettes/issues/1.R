@@ -7,7 +7,7 @@ lapply(list("2015-16" = sample_file_1516,
             "2014-15" = SampleFile1415::sample_file_1415, 
             "2013-14" = sample_file_1314),
        function(x) {
-         sample_file_1516 %>%
+         x %>%
            setkey(age_range) %>%
            age_range_decoder[., on = "age_range"] %>%
            .[Sw_amt > 0] %>%
