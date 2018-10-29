@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
   width = 100,
   fig.width = 9,
   fig.height = 9,
-  cache = F,
   cache.extra = list(sessionInfo(), format(Sys.Date(), "%Y-%m-%d")),
   comment = "#>"
 )
@@ -48,7 +47,7 @@ These are the global variables. That is, only consider HILDA individuals aged be
 ```{r}
 # 1000 is pretty good (100,000 individuals)
 N_SIMULATIONS <- 1000
-OLDEST.AGE <- 70L
+OLDEST.AGE <- 65L
 YOUNGEST.AGE <- 30L
 # tbl_dt [100 x 2]
 #    Percentile lifetime_AWOTE
@@ -460,7 +459,70 @@ A tensor product smooth was used to convert the spikes in the sparse transition 
 An example of a the tensor product smooth applies to some dummy data is in the following figure. 
 For the model, we used \(k = 10\).
 
+```{r cache_invalidate, echo=FALSE}
+cache_validate <- function(filename, expr, verbose = TRUE) {
+  new.sha1 <- digest::sha1(deparse(substitute(expr)))
+
+  cache_valid <-
+    file.exists(filename) &&
+    as.double(difftime(Sys.time(),
+                       file.mtime(filename),
+                       units = "days")) <= 1L
+
+  if (!cache_valid) {
+    return(list(FALSE, new = new.sha1))
+  } else {
+    a.sha1 <- paste0(tools::file_path_sans_ext(filename), ".sha1")
+    if (!file.exists(a.sha1)) {
+      return(list(FALSE, new = new.sha1))
+    }
+    a.sha1 <- paste0(tools::file_path_sans_ext(filename), ".sha1")
+    if (verbose) {
+      cat("\n", readChar(a.sha1, 40L), "\n",
+          digest::sha1(deparse(substitute(expr))), "\n")
+    }
+    if (!file.exists(a.sha1)) {
+      return(list(FALSE, new = new.sha1))
+
+    }
+    if (identical(new.sha1 <- digest::sha1(deparse(substitute(expr))),
+                  old.sha1 <- readChar(a.sha1, 40L))) {
+      list(TRUE, new = new.sha1, old = old.sha1)
+    } else {
+      list(FALSE, new = new.sha1, old = old.sha1)
+    }
+  }
+}
+```
+
+```{r use_cache_for, echo=FALSE}
+use_cache_for <- function(filename, expr, validate.cache = cache_validate(filename, expr)) {
+  hutils::provide.dir(dirname(filename))
+  if (file.exists(filename) && validate.cache[[1]]) {
+    switch(tools::file_ext(filename),
+           "fst" = fst::read_fst(filename, as.data.table = TRUE),
+           "csv" = fread(filename),
+           "tsv" = fread(filename, sep = "\t"),
+           stop("Invalid file extension:", tools::file_ext(filename)))
+  } else {
+    res <- expr
+    switch(tools::file_ext(filename),
+           "fst" = fst::write_fst(res, filename),
+           "csv" = fwrite(res, filename),
+           "tsv" = fwrite(res, sep = "\t"),
+           warning("Invalid file extension:", tools::file_ext(filename), ". No cache written."))
+
+    writeChar(validate.cache[["new"]],
+              paste0(tools::file_path_sans_ext(filename), ".sha1"),
+              nchar = 40L)
+    return(res)
+  }
+
+}
+```
+
 ```{r tensor-product-example, echo=FALSE, fig.width=13, fig.height=13}
+dat <- use_cache_for("Pachinko-cache/dat.fst", {
 set.seed(4)
 dat <- CJ(x = seq(from = 0, to = 1, by = 0.005),
           y = seq(from = 0, to = 1, by = 0.005))
@@ -476,7 +538,7 @@ dat[x %between% c(0.35, 0.45) & y > 0.9, z := 0]
 dat[, predicted05 := predict(gam(z ~ te(x, y, k = c(5, 5)), data = dat), newdata = dat)]
 dat[, predicted10 := predict(gam(z ~ te(x, y, k = c(10, 10)), data = dat), newdata = dat)]
 dat[, predicted30 := predict(gam(z ~ te(x, y, k = c(30, 30)), data = dat), newdata = dat)]
-
+})
 dat %>%
   melt(measure.vars = c("z", "predicted05", "predicted10", "predicted30")) %>%
   .[, value := (value - min(value)) / max(value - min(value)), keyby = "variable"] %>%
@@ -578,6 +640,10 @@ copy_column <- function(.data, new_name, column_copied){
 }
 
 age_the_simulation <- function(input.table, five_year_group = 2){
+  if (OLDEST.AGE < 70L && five_year_group == 8L) {
+    # Avoid 'Can not cast empty data.table'
+    return(input.table) # since not ageing that far
+  }
   Ages <- c("25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64")
   age_range_fm <- Ages[five_year_group - 1]
   agerangefm <- sub("-", "", age_range_fm, fixed = TRUE)
@@ -596,6 +662,7 @@ age_the_simulation <- function(input.table, five_year_group = 2){
 ```
 
 ```{r machine_widget}
+
 machine_widget <- 
   if (YOUNGEST.AGE == 30) {
     input %>%
@@ -650,7 +717,20 @@ awote_by_age <-
                                            0),
                                    AWOTE_average), keyby = "Age"] %>%
       .[, AWOTE_average := zoo::na.approx(AWOTE_average, na.rm = FALSE), keyby = "Age"]
-  }
+  } %>%
+  # .[Age != "25-29"] %>%
+  
+  # Magic numbers from Will
+  .[, AWOTE_average := if_else(Age %ein% c("55-59",
+                                           if (OLDEST.AGE > 65L) "60-64"),
+                               if_else(Percentile < 95,
+                                       pminC(AWOTE_average, 1.56),
+                                       if_else(Percentile < 99, 
+                                               1.97,
+                                               3.69)),
+                               AWOTE_average)]
+
+
 
 stopifnot(nrow(awote_by_age) == 100 * (OLDEST.AGE %/% 5 - YOUNGEST.AGE %/% 5))
 
@@ -677,6 +757,7 @@ lifetime_pachinko_density <-
                        grep(".1", names(.), value = TRUE),
                        switch(as.character(OLDEST.AGE),
                               "70" = "Percentile_6064", 
+                              "65" = "Percentile_5559",
                               stop("Unanticipated OLDEST.AGE")))] %>%
   setnames(old = grep(".1$", names(.), value = TRUE),
            new = gsub(".1$", "", names(.)[grep(".1$", names(.), value = FALSE)])) %>%
